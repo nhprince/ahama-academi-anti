@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Dashboard — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dash-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <a class="brand" href="../">
+          <span class="brand-mark">AA</span>
+          <span>Ahama Academy</span>
+        </a>
+      </div>
+
+      <nav class="side-nav">
+        <span class="side-label">STUDENT PORTAL</span>
+        <a class="side-link active" href="#courses" onclick="switchDashView('courses', this)">🎓 My Courses</a>
+        <a class="side-link" href="#templates" onclick="switchDashView('templates', this)">📦 My Digital Items</a>
+        <a class="side-link" href="#orders" onclick="switchDashView('orders', this)">🧾 Order History</a>
+        <a class="side-link" href="#certificates" onclick="switchDashView('certificates', this)">📜 Certificates</a>
+        
+        <span class="side-label">NAVIGATION</span>
+        <a class="side-link" href="../courses/">Browse Courses</a>
+        <a class="side-link" href="../templates/">Digital Store</a>
+        <a class="side-link" href="../">← Main Website</a>
+      </nav>
+
+      <div class="side-user">
+        <span class="avatar" id="dashUserAvatar">SA</span>
+        <div style="flex:1; overflow:hidden;">
+          <b id="dashUserName" style="display:block; font-size:13px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">Sahariyar Ahamad</b>
+          <small id="dashUserEmail" style="color:var(--muted); font-size:11px;">student@ahama.academy</small>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="window.AhamaAPI.logout()" title="Logout" style="padding:4px 8px;">✕</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+      <header class="dash-top">
+        <div>
+          <span class="eyebrow">STUDENT LEARNING DASHBOARD</span>
+          <h1>Welcome Back, <span id="welcomeName">Student</span>!</h1>
+        </div>
+        <div class="header-actions">
+          <button class="theme-btn" id="themeBtn">💻 System</button>
+        </div>
+      </header>
+
+      <!-- KPI Metrics -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span>Enrolled Courses</span>
+          <strong id="kpiCourseCount">2</strong>
+          <small>Active & Completed</small>
+        </div>
+        <div class="kpi-card">
+          <span>Digital Templates</span>
+          <strong id="kpiTemplateCount">1</strong>
+          <small>Licensed items</small>
+        </div>
+        <div class="kpi-card">
+          <span>Certificates Earned</span>
+          <strong id="kpiCertCount">1</strong>
+          <small>Verified credential</small>
+        </div>
+        <div class="kpi-card">
+          <span>Completed Lessons</span>
+          <strong id="kpiLessonCount">6</strong>
+          <small>Total progress</small>
+        </div>
+      </div>
+
+      <!-- VIEW 1: My Courses -->
+      <section id="viewCourses" class="panel">
+        <div class="panel-head">
+          <h2>My Enrolled Courses</h2>
+          <a class="btn btn-secondary btn-sm" href="../courses/">Explore More Courses →</a>
+        </div>
+
+        <div id="studentCourseGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:20px;">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- VIEW 2: My Digital Templates -->
+      <section id="viewTemplates" class="panel" style="display:none;">
+        <div class="panel-head">
+          <h2>My Digital Themes & Templates</h2>
+          <a class="btn btn-secondary btn-sm" href="../templates/">Shop More Templates →</a>
+        </div>
+
+        <div id="studentTemplateList" style="display:flex; flex-direction:column; gap:14px;">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- VIEW 3: Orders History -->
+      <section id="viewOrders" class="panel" style="display:none;">
+        <div class="panel-head">
+          <h2>Purchase & Payment History</h2>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Order Code</th>
+                <th>Item Purchased</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>TrxID</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="studentOrdersTbody">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VIEW 4: Certificate Generator -->
+      <section id="viewCertificates" class="panel" style="display:none;">
+        <div class="panel-head">
+          <h2>Official Completion Certificates</h2>
+          <p style="color:var(--muted); font-size:14px; margin:0;">Download your high-resolution official verified certificate.</p>
+        </div>
+
+        <div style="display:flex; gap:16px; align-items:center; margin-bottom:20px; flex-wrap:wrap;">
+          <label style="font-size:14px; font-weight:600;">Select Completed Course:</label>
+          <select id="certCourseSelect" class="form-input" style="width:auto; min-width:280px;" onchange="renderCertificate()">
+            <option value="Java Foundation & OOP Mastery">Java Foundation & OOP Mastery</option>
+            <option value="App Development with Java (Native Android)">App Development with Java (Native Android)</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="downloadCertificate()">Download Certificate (PNG)</button>
+        </div>
+
+        <div class="certificate-container">
+          <canvas id="certificateCanvas" width="800" height="520"></canvas>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    let studentData = null;
+
+    async function initStudentDash() {
+      try {
+        const user = window.AhamaAPI.getUser();
+        if (!user) {
+          window.location.href = '../login/?redirect=' + encodeURIComponent(window.location.href);
+          return;
+        }
+
+        document.getElementById('welcomeName').textContent = user.name.split(' ')[0] || user.name;
+        document.getElementById('dashUserName').textContent = user.name;
+        document.getElementById('dashUserEmail').textContent = user.email;
+        document.getElementById('dashUserAvatar').textContent = user.avatar || 'ST';
+
+        studentData = await window.AhamaAPI.getStudentDashboard();
+        renderStudentData();
+        renderCertificate();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderStudentData() {
+      const enrollments = studentData.enrollments || [];
+      const templates = studentData.templates || [];
+      const orders = studentData.orders || [];
+
+      // KPIs
+      document.getElementById('kpiCourseCount').textContent = enrollments.length;
+      document.getElementById('kpiTemplateCount').textContent = templates.length;
+      document.getElementById('kpiCertCount').textContent = enrollments.filter(e => e.progress_percent >= 100 || e.certificate_id).length;
+      const totalLessonsDone = enrollments.reduce((acc, e) => acc + (e.completed_count || 0), 0);
+      document.getElementById('kpiLessonCount').textContent = totalLessonsDone || 6;
+
+      // Render Courses
+      const cGrid = document.getElementById('studentCourseGrid');
+      if (enrollments.length === 0) {
+        cGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">You haven't enrolled in any courses yet. <a href="../courses/" style="color:var(--primary);font-weight:bold;">Explore courses</a></div>`;
+      } else {
+        cGrid.innerHTML = enrollments.map(e => `
+          <div class="hero-mini-course" style="background:var(--surface); border:1px solid var(--border); margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span class="badge-tag" style="background:var(--soft); color:var(--text);">${e.category}</span>
+              <span style="font-size:12px; font-weight:700; color:var(--primary);">${e.progress_percent}%</span>
+            </div>
+            <h4 style="margin:0 0 14px; font-size:16px;">${e.title}</h4>
+            <div class="progress-bar" style="margin-bottom:8px;">
+              <div class="progress-fill" style="width:${e.progress_percent}%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+              <span style="font-size:12px; color:var(--muted);">${e.completed_count || 3} of ${e.total_lessons || 7} lessons</span>
+              <a class="btn btn-primary btn-sm" href="../classroom/?course=${e.slug}">
+                ${e.progress_percent >= 100 ? 'Review Course →' : 'Continue →'}
+              </a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Templates
+      const tList = document.getElementById('studentTemplateList');
+      if (templates.length === 0) {
+        tList.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);">No templates purchased yet. <a href="../templates/" style="color:var(--primary);font-weight:bold;">Browse Digital Store</a></div>`;
+      } else {
+        tList.innerHTML = templates.map(t => `
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface); flex-wrap:wrap; gap:14px;">
+            <div>
+              <b style="font-size:16px; display:block;">${t.title}</b>
+              <small style="color:var(--muted);">${t.category} · Licensed for Production</small>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-family:monospace; background:var(--soft); padding:6px 10px; border-radius:6px; font-size:12px; border:1px solid var(--border);">
+                🔑 ${t.license_key || 'AA-LIC-UNLIMITED'}
+              </span>
+              <a class="btn btn-primary btn-sm" href="${t.download_url}" target="_blank">
+                ⬇ Download ZIP
+              </a>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Orders
+      const oTbody = document.getElementById('studentOrdersTbody');
+      if (orders.length === 0) {
+        oTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No transaction records found.</td></tr>`;
+      } else {
+        oTbody.innerHTML = orders.map(o => `
+          <tr>
+            <td><b>#${o.order_code}</b></td>
+            <td>${o.item_title}</td>
+            <td><b>৳ ${o.amount.toLocaleString()}</b></td>
+            <td><span style="text-transform:uppercase; font-size:11px; font-weight:700;">${o.payment_method}</span></td>
+            <td><code style="font-size:12px;">${o.trx_id || 'N/A'}</code></td>
+            <td><span class="status-badge ${o.status}">${o.status}</span></td>
+            <td><small style="color:var(--muted);">${o.created_at || 'Recent'}</small></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function switchDashView(viewName, el) {
+      document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+      el.classList.add('active');
+
+      document.getElementById('viewCourses').style.display = viewName === 'courses' ? 'block' : 'none';
+      document.getElementById('viewTemplates').style.display = viewName === 'templates' ? 'block' : 'none';
+      document.getElementById('viewOrders').style.display = viewName === 'orders' ? 'block' : 'none';
+      document.getElementById('viewCertificates').style.display = viewName === 'certificates' ? 'block' : 'none';
+
+      if (viewName === 'certificates') {
+        renderCertificate();
+      }
+    }
+
+    // HTML5 Canvas Certificate Generator
+    function renderCertificate() {
+      const canvas = document.getElementById('certificateCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const courseTitle = document.getElementById('certCourseSelect')?.value || 'App Development with Java';
+      const user = window.AhamaAPI.getUser() || { name: 'Sahariyar Ahamad' };
+
+      // Background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 800, 520);
+
+      // Outer Crimson & Gold Border
+      ctx.strokeStyle = '#e11d48';
+      ctx.lineWidth = 14;
+      ctx.strokeRect(16, 16, 768, 488);
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(26, 26, 748, 468);
+
+      // Top Header
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 26px Outfit, Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('AHAMA ACADEMY', 400, 80);
+
+      ctx.fillStyle = '#e11d48';
+      ctx.font = 'bold 16px Inter, sans-serif';
+      ctx.fillText('CERTIFICATE OF ACCOMPLISHMENT', 400, 115);
+
+      // Subtitle
+      ctx.fillStyle = '#64748b';
+      ctx.font = '14px Inter, sans-serif';
+      ctx.fillText('This document certifies that', 400, 165);
+
+      // Student Name
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 30px Outfit, Inter, sans-serif';
+      ctx.fillText(user.name.toUpperCase(), 400, 215);
+
+      // Body text
+      ctx.fillStyle = '#64748b';
+      ctx.font = '14px Inter, sans-serif';
+      ctx.fillText('has successfully mastered the curriculum and completed all projects for', 400, 260);
+
+      // Course Name
+      ctx.fillStyle = '#e11d48';
+      ctx.font = 'bold 22px Outfit, Inter, sans-serif';
+      ctx.fillText(courseTitle, 400, 305);
+
+      // Verification Line & Signature
+      ctx.fillStyle = '#475569';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.fillText('Issued: ' + new Date().toLocaleDateString('en-GB'), 220, 420);
+      ctx.fillText('Verification ID: AA-CERT-2026-9041', 220, 440);
+
+      // Instructor signature line
+      ctx.beginPath();
+      ctx.moveTo(520, 420);
+      ctx.lineTo(680, 420);
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 13px Inter, sans-serif';
+      ctx.fillText('Sahariyar Ahamad', 600, 440);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.fillText('Lead Instructor & Founder', 600, 455);
+    }
+
+    function downloadCertificate() {
+      const canvas = document.getElementById('certificateCanvas');
+      const img = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = img;
+      a.download = 'Ahama_Academy_Certificate.png';
+      a.click();
+      window.showToast('Official Certificate PNG downloaded! 🎉', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', initStudentDash);
+  </script>
+</body>
+</html>

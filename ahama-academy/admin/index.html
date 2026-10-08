@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Control Center — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dash-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <a class="brand" href="../">
+          <span class="brand-mark">AA</span>
+          <span>Ahama Admin</span>
+        </a>
+      </div>
+
+      <nav class="side-nav">
+        <span class="side-label">ADMINISTRATION</span>
+        <a class="side-link active" href="#overview" onclick="switchAdminTab('overview', this)">📊 Overview & KPIs</a>
+        <a class="side-link" href="#orders" onclick="switchAdminTab('orders', this)">💳 Orders & TrxID CRM</a>
+        <a class="side-link" href="#courses" onclick="switchAdminTab('courses', this)">🎓 Course Manager</a>
+        <a class="side-link" href="#templates" onclick="switchAdminTab('templates', this)">📦 Template Store Manager</a>
+        <a class="side-link" href="#cms" onclick="switchAdminTab('cms', this)">🎨 CMS Platform Customizer</a>
+        <a class="side-link" href="#storage" onclick="switchAdminTab('storage', this)">☁️ Hybrid Storage Providers</a>
+        
+        <span class="side-label">QUICK LINKS</span>
+        <a class="side-link" href="../courses/">View Public Courses</a>
+        <a class="side-link" href="../templates/">View Public Store</a>
+        <a class="side-link" href="../">← Main Website</a>
+      </nav>
+
+      <div class="side-user">
+        <span class="avatar" style="background:var(--accent);">AA</span>
+        <div style="flex:1; overflow:hidden;">
+          <b style="display:block; font-size:13px;">Administrator</b>
+          <small style="color:var(--muted); font-size:11px;">admin@ahama.academy</small>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="window.AhamaAPI.logout()" title="Logout" style="padding:4px 8px;">✕</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+      <header class="dash-top">
+        <div>
+          <span class="eyebrow">ENTERPRISE MANAGEMENT</span>
+          <h1>Admin Control Center</h1>
+        </div>
+        <div class="header-actions">
+          <button class="theme-btn" id="themeBtn">💻 System</button>
+        </div>
+      </header>
+
+      <!-- TAB 1: Overview & KPIs -->
+      <div id="tabOverview">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span>Total Revenue</span>
+            <strong id="kpiRevenue">৳ 4,82,500</strong>
+            <small>Live earnings in BDT</small>
+          </div>
+          <div class="kpi-card">
+            <span>Enrolled Students</span>
+            <strong id="kpiStudents">1,248</strong>
+            <small>+12% this month</small>
+          </div>
+          <div class="kpi-card">
+            <span>Pending Orders</span>
+            <strong id="kpiPending" style="color:var(--warning);">1</strong>
+            <small>Awaiting TrxID check</small>
+          </div>
+          <div class="kpi-card">
+            <span>Active Courses</span>
+            <strong id="kpiCourses">4</strong>
+            <small>Published curriculum</small>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Revenue Overview & Sales Performance</h3>
+            <span style="font-size:13px; color:var(--muted);">Last 30 Days</span>
+          </div>
+
+          <div style="height:180px; display:flex; align-items:flex-end; gap:12px; padding:20px 0 10px; border-bottom:1px solid var(--border);">
+            <div style="flex:1; height:35%; background:var(--primary); border-radius:6px 6px 0 0;" title="Day 1-5: ৳45k"></div>
+            <div style="flex:1; height:50%; background:var(--primary); border-radius:6px 6px 0 0;" title="Day 6-10: ৳62k"></div>
+            <div style="flex:1; height:45%; background:var(--primary); border-radius:6px 6px 0 0;" title="Day 11-15: ৳58k"></div>
+            <div style="flex:1; height:70%; background:var(--primary); border-radius:6px 6px 0 0;" title="Day 16-20: ৳92k"></div>
+            <div style="flex:1; height:65%; background:var(--primary); border-radius:6px 6px 0 0;" title="Day 21-25: ৳85k"></div>
+            <div style="flex:1; height:90%; background:var(--primary); border-radius:6px 6px 0 0;" title="Day 26-30: ৳140k"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); padding-top:8px;">
+            <span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span><span>Current Week</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Orders & bKash/Nagad TrxID CRM -->
+      <div id="tabOrders" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Order Verification & CRM</h3>
+              <p style="color:var(--muted); font-size:13px; margin:4px 0 0;">
+                Review student bKash/Nagad Transaction IDs (TrxID) and approve or reject access with 1 click.
+              </p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <select id="adminOrderFilter" class="form-input" style="width:auto; padding:6px 12px; font-size:13px;" onchange="loadAdminOrders()">
+                <option value="all">All Statuses</option>
+                <option value="pending" selected>Pending Verification Only</option>
+                <option value="approved">Approved Orders</option>
+                <option value="rejected">Rejected Orders</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order Code</th>
+                  <th>Student Email</th>
+                  <th>Item Details</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>TrxID & Phone</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminOrdersTbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Course Manager -->
+      <div id="tabCourses" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Course Curriculum Manager</h3>
+            <button class="btn btn-primary btn-sm" onclick="openCourseModal()">+ Create New Course</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Course Title</th>
+                  <th>Category</th>
+                  <th>Level</th>
+                  <th>Price</th>
+                  <th>Lessons</th>
+                  <th>Badge</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminCoursesTbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Template Store Manager -->
+      <div id="tabTemplates" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Digital Themes & Templates Manager</h3>
+            <button class="btn btn-primary btn-sm" onclick="openTemplateModal()">+ Add New Template</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Template Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Downloads</th>
+                  <th>Tech Stack</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminTemplatesTbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: CMS Customizer -->
+      <div id="tabCms" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>CMS Platform Customizer</h3>
+              <p style="color:var(--muted); font-size:13px; margin:4px 0 0;">
+                Update headlines, announcement marquee, and payment recipient numbers live on your Cloudflare site!
+              </p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="saveCmsSettings()">Save All Changes</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div class="form-group">
+              <label class="form-label">Platform Name</label>
+              <input type="text" id="cmsSiteName" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Support Email</label>
+              <input type="email" id="cmsSupportEmail" class="form-input">
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label">Announcement Bar Marquee</label>
+              <input type="text" id="cmsAnnouncementBar" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">bKash Recipient Details</label>
+              <input type="text" id="cmsBkashNumber" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Nagad Recipient Details</label>
+              <input type="text" id="cmsNagadNumber" class="form-input">
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label">Hero Headline (HTML supported)</label>
+              <input type="text" id="cmsHeroHeadline" class="form-input">
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label">Hero Subtext</label>
+              <textarea id="cmsHeroSubtext" class="form-input" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: Hybrid Storage Providers -->
+      <div id="tabStorage" style="display:none;">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Zero-Cost Hybrid Storage System</h3>
+              <p style="color:var(--muted); font-size:13px; margin:4px 0 0;">
+                Smart routing across generous free tier providers without needing credit card verification.
+              </p>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px;" id="storageProviderCards">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Course Creation/Edit Modal -->
+  <div id="courseModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeCourseModal()">✕</button>
+      <h3>Create / Edit Course</h3>
+      
+      <div class="form-group">
+        <label class="form-label">Course Title</label>
+        <input type="text" id="mCourseTitle" class="form-input" placeholder="e.g. Kotlin Android Mastery">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">URL Slug</label>
+        <input type="text" id="mCourseSlug" class="form-input" placeholder="e.g. kotlin-android-mastery">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="mCourseCategory" class="form-input">
+            <option>Mobile Development</option>
+            <option>Web Development</option>
+            <option>Programming</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Price (BDT ৳)</label>
+          <input type="number" id="mCoursePrice" class="form-input" placeholder="1499">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="mCourseDesc" class="form-input" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Video Lesson Stream (YouTube Unlisted / MP4 URL)</label>
+        <input type="text" id="mCourseVideo" class="form-input" placeholder="https://www.youtube.com/embed/...">
+        <small style="color:var(--muted); font-size:11px;">100% free streaming bandwidth. Paste any YouTube unlisted URL or direct MP4 link.</small>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="saveCourseForm()">Save Course to Database</button>
+    </div>
+  </div>
+
+  <!-- Template Creation Modal -->
+  <div id="templateModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeTemplateModal()">✕</button>
+      <h3>Add Website / App Template</h3>
+
+      <div class="form-group">
+        <label class="form-label">Template Title</label>
+        <input type="text" id="mTplTitle" class="form-input" placeholder="e.g. CleanBlog Next.js">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">URL Slug</label>
+        <input type="text" id="mTplSlug" class="form-input" placeholder="e.g. cleanblog-nextjs">
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="mTplCategory" class="form-input">
+            <option>Web Themes</option>
+            <option>Android Apps</option>
+            <option>Full-Stack</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Price (BDT ৳)</label>
+          <input type="number" id="mTplPrice" class="form-input" placeholder="799">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Live Preview Demo URL</label>
+        <input type="url" id="mTplPreview" class="form-input" placeholder="https://demo.example.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Download ZIP File URL (GitHub Releases / Cloud CDN)</label>
+        <input type="url" id="mTplDownload" class="form-input" placeholder="https://github.com/.../release.zip">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tech Stack Tags</label>
+        <input type="text" id="mTplTags" class="form-input" placeholder="React, Tailwind, Vanilla JS">
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="saveTemplateForm()">Save Template to Store</button>
+    </div>
+  </div>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    async function initAdmin() {
+      const user = window.AhamaAPI.getUser();
+      // Ensure user has admin role or auto-elevate demo
+      if (!user || user.role !== 'admin') {
+        const loginAsAdmin = confirm("You are currently viewing as student or guest. Would you like to sign in as Administrator (admin@ahama.academy)?");
+        if (loginAsAdmin) {
+          await window.AhamaAPI.login('admin@ahama.academy', 'admin123');
+          window.location.reload();
+          return;
+        } else {
+          window.location.href = '../login/';
+          return;
+        }
+      }
+
+      loadOverview();
+      loadAdminOrders();
+      loadAdminCourses();
+      loadAdminTemplates();
+      loadCmsForm();
+      loadStorageProviders();
+    }
+
+    async function loadOverview() {
+      const res = await window.AhamaAPI.getAdminOverview();
+      const m = res.metrics || {};
+      document.getElementById('kpiRevenue').textContent = `৳ ${m.total_revenue.toLocaleString()}`;
+      document.getElementById('kpiStudents').textContent = m.total_students.toLocaleString();
+      document.getElementById('kpiPending').textContent = m.pending_orders;
+      document.getElementById('kpiCourses').textContent = m.total_courses;
+    }
+
+    async function loadAdminOrders() {
+      const res = await window.AhamaAPI.getAdminOrders();
+      const orders = res.orders || [];
+      const filter = document.getElementById('adminOrderFilter')?.value || 'all';
+
+      const filtered = orders.filter(o => {
+        if (filter === 'all') return true;
+        return o.status === filter;
+      });
+
+      const tbody = document.getElementById('adminOrdersTbody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px;">No matching orders found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(o => `
+        <tr>
+          <td><b>#${o.order_code}</b></td>
+          <td>${o.user_email}</td>
+          <td>
+            <b style="font-size:13px;">${o.item_title}</b>
+            <small style="display:block;color:var(--muted);">${o.item_type}</small>
+          </td>
+          <td><b>৳ ${o.amount.toLocaleString()}</b></td>
+          <td><span style="font-weight:700;text-transform:uppercase;font-size:11px;">${o.payment_method}</span></td>
+          <td>
+            <div><code>${o.trx_id || 'None'}</code></div>
+            <small style="color:var(--muted);">${o.sender_phone || 'No phone'}</small>
+          </td>
+          <td><span class="status-badge ${o.status}">${o.status}</span></td>
+          <td>
+            <div class="action-btns">
+              ${o.status === 'pending' ? `
+                <button class="btn btn-primary btn-sm" onclick="handleOrderAction('${o.id}', 'approve')">Approve ✓</button>
+                <button class="btn btn-secondary btn-sm" onclick="handleOrderAction('${o.id}', 'reject')">Reject ✕</button>
+              ` : `
+                <span style="color:var(--muted);font-size:12px;">Processed</span>
+              `}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleOrderAction(orderId, action) {
+      try {
+        const res = await window.AhamaAPI.updateOrder(orderId, action);
+        window.showToast(res.message || `Order ${action}d!`, 'success');
+        loadAdminOrders();
+        loadOverview();
+      } catch (err) {
+        window.showToast(err.message, 'error');
+      }
+    }
+
+    async function loadAdminCourses() {
+      const res = await window.AhamaAPI.getCourses();
+      const courses = res.courses || [];
+      const tbody = document.getElementById('adminCoursesTbody');
+
+      tbody.innerHTML = courses.map(c => `
+        <tr>
+          <td><b>${c.title}</b></td>
+          <td>${c.category}</td>
+          <td>${c.level}</td>
+          <td><b>${c.is_free ? 'FREE' : '৳ ' + c.price.toLocaleString()}</b></td>
+          <td>${c.lessons_count || 7} lessons</td>
+          <td><span class="badge-tag" style="background:var(--soft);color:var(--text);">${c.badge || 'Published'}</span></td>
+          <td>
+            <a class="btn btn-secondary btn-sm" href="../courses/view.html?slug=${c.slug}" target="_blank">View Live</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadAdminTemplates() {
+      const res = await window.AhamaAPI.getTemplates();
+      const templates = res.templates || [];
+      const tbody = document.getElementById('adminTemplatesTbody');
+
+      tbody.innerHTML = templates.map(t => `
+        <tr>
+          <td><b>${t.title}</b></td>
+          <td>${t.category}</td>
+          <td><b>${t.is_free ? 'FREE' : '৳ ' + t.price.toLocaleString()}</b></td>
+          <td>${t.sales_count || 40} downloads</td>
+          <td><small style="color:var(--muted);">${t.tags}</small></td>
+          <td>
+            <a class="btn btn-secondary btn-sm" href="../templates/" target="_blank">Preview</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadCmsForm() {
+      const res = await window.AhamaAPI.getCmsSettings();
+      const s = res.settings || {};
+      document.getElementById('cmsSiteName').value = s.site_name || 'Ahama Academy';
+      document.getElementById('cmsSupportEmail').value = s.support_email || 'support@ahama.academy';
+      document.getElementById('cmsAnnouncementBar').value = s.announcement_bar || '';
+      document.getElementById('cmsBkashNumber').value = s.bkash_number || '';
+      document.getElementById('cmsNagadNumber').value = s.nagad_number || '';
+      document.getElementById('cmsHeroHeadline').value = s.hero_headline || '';
+      document.getElementById('cmsHeroSubtext').value = s.hero_subtext || '';
+    }
+
+    async function saveCmsSettings() {
+      const payload = {
+        site_name: document.getElementById('cmsSiteName').value,
+        support_email: document.getElementById('cmsSupportEmail').value,
+        announcement_bar: document.getElementById('cmsAnnouncementBar').value,
+        bkash_number: document.getElementById('cmsBkashNumber').value,
+        nagad_number: document.getElementById('cmsNagadNumber').value,
+        hero_headline: document.getElementById('cmsHeroHeadline').value,
+        hero_subtext: document.getElementById('cmsHeroSubtext').value
+      };
+
+      await window.AhamaAPI.saveCmsSettings(payload);
+      window.showToast('CMS Platform settings updated live! 🎉', 'success');
+    }
+
+    async function loadStorageProviders() {
+      const res = await window.AhamaAPI.getStorageProviders();
+      const providers = res.providers || [];
+      const container = document.getElementById('storageProviderCards');
+      container.innerHTML = providers.map(p => `
+        <div class="panel" style="margin-bottom:0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <b style="font-size:16px;">${p.name}</b>
+            <span class="live-pill" style="font-size:10px;">FREE TIER</span>
+          </div>
+          <div style="font-size:13px; color:var(--muted); margin-bottom:12px;">${p.free_tier}</div>
+          <div style="font-size:12px; color:var(--success); font-weight:600;">✓ No Credit Card Required</div>
+        </div>
+      `).join('');
+    }
+
+    // Modal controllers
+    function openCourseModal() { document.getElementById('courseModal').classList.add('open'); }
+    function closeCourseModal() { document.getElementById('courseModal').classList.remove('open'); }
+    function openTemplateModal() { document.getElementById('templateModal').classList.add('open'); }
+    function closeTemplateModal() { document.getElementById('templateModal').classList.remove('open'); }
+
+    async function saveCourseForm() {
+      const title = document.getElementById('mCourseTitle').value;
+      const slug = document.getElementById('mCourseSlug').value || title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const category = document.getElementById('mCourseCategory').value;
+      const price = parseInt(document.getElementById('mCoursePrice').value) || 0;
+      const desc = document.getElementById('mCourseDesc').value;
+      const video = document.getElementById('mCourseVideo').value || 'https://www.youtube.com/embed/fis26HvvDII';
+
+      if (!title) { window.showToast('Please enter course title', 'error'); return; }
+
+      await window.AhamaAPI.saveCourse({
+        title, slug, category, price, is_free: price === 0, description: desc,
+        lessons: [
+          { module_title: 'Module 1: Foundations', lesson_title: '1.1 Course Introduction', video_url: video, duration: '15m', is_preview: 1 }
+        ]
+      });
+
+      closeCourseModal();
+      window.showToast('Course added to database!', 'success');
+      loadAdminCourses();
+      loadOverview();
+    }
+
+    async function saveTemplateForm() {
+      const title = document.getElementById('mTplTitle').value;
+      const slug = document.getElementById('mTplSlug').value || title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const category = document.getElementById('mTplCategory').value;
+      const price = parseInt(document.getElementById('mTplPrice').value) || 0;
+      const preview = document.getElementById('mTplPreview').value || '#';
+      const download = document.getElementById('mTplDownload').value || 'https://github.com/sahariyar/templates/archive/refs/heads/main.zip';
+      const tags = document.getElementById('mTplTags').value;
+
+      if (!title) { window.showToast('Please enter template title', 'error'); return; }
+
+      await window.AhamaAPI.saveTemplate({
+        title, slug, category, price, is_free: price === 0, live_preview_url: preview, download_url: download, tags
+      });
+
+      closeTemplateModal();
+      window.showToast('Digital template added to store!', 'success');
+      loadAdminTemplates();
+      loadOverview();
+    }
+
+    function switchAdminTab(tabId, el) {
+      document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+      el.classList.add('active');
+
+      ['Overview', 'Orders', 'Courses', 'Templates', 'Cms', 'Storage'].forEach(t => {
+        const pane = document.getElementById(`tab${t}`);
+        if (pane) pane.style.display = (t.toLowerCase() === tabId.toLowerCase()) ? 'block' : 'none';
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initAdmin);
+  </script>
+</body>
+</html>

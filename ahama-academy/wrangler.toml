@@ -1,0 +1,10 @@
+name = "ahama-academy"
+compatibility_date = "2026-10-01"
+pages_build_output_dir = "."
+
+# Bindings for Cloudflare D1 Database (Free Tier)
+# Run `npx wrangler d1 create ahama-db` and paste your database_id below:
+[[d1_databases]]
+binding = "DB"
+database_name = "ahama-db"
+database_id = "your-d1-database-uuid"

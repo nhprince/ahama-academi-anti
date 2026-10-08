@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Store — Website Themes & App Templates — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../">
+        <span class="brand-mark">AA</span>
+        <span>Ahama Academy</span>
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="../">Home</a>
+        <a href="../courses/">Courses</a>
+        <a class="active" href="./">Templates & Themes</a>
+        <a href="../docs/">Docs</a>
+        <a href="../about/">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn">💻 System</button>
+        <div id="headerAuth"></div>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:40px; padding-bottom:80px;">
+    <div style="margin-bottom:32px;">
+      <span class="eyebrow">DIGITAL STORE & ASSETS</span>
+      <h1 style="font-size:clamp(32px, 4vw, 48px); margin:0 0 10px;">Production-Ready Themes & App UI Kits</h1>
+      <p style="color:var(--muted); font-size:16px; margin:0;">
+        Fast, clean, zero-dependency source codes for Android apps, responsive websites, and serverless templates.
+      </p>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div style="display:flex; gap:12px; margin-bottom:32px; flex-wrap:wrap;">
+      <input type="search" id="tplSearchInput" class="form-input" placeholder="Search templates (e.g. Android, LMS, E-Commerce)..." style="flex:1; min-width:260px;">
+      
+      <select id="tplCategorySelect" class="form-input" style="width:auto; min-width:180px;">
+        <option value="all">All Categories</option>
+        <option value="Web Themes">Web Themes</option>
+        <option value="Android Apps">Android Apps</option>
+        <option value="Full-Stack">Full-Stack Cloudflare</option>
+      </select>
+    </div>
+
+    <div id="templatesCatalogGrid" class="template-grid">
+      <!-- Dynamically Populated -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container copyright">
+      © 2026 Ahama Academy. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    let allTemplates = [];
+
+    async function loadTemplates() {
+      const res = await window.AhamaAPI.getTemplates();
+      allTemplates = res.templates || [];
+      renderTemplates();
+    }
+
+    function renderTemplates() {
+      const q = (document.getElementById('tplSearchInput')?.value || '').toLowerCase().trim();
+      const cat = document.getElementById('tplCategorySelect')?.value || 'all';
+
+      const filtered = allTemplates.filter(t => {
+        const matchesQ = !q || t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.tags.toLowerCase().includes(q);
+        const matchesCat = cat === 'all' || t.category === cat;
+        return matchesQ && matchesCat;
+      });
+
+      const grid = document.getElementById('templatesCatalogGrid');
+      if (!grid) return;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">No digital templates found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(t => `
+        <article class="template-card">
+          <div class="course-cover" style="background:linear-gradient(135deg, #1e1b4b, #312e81); height:150px;">
+            <div class="cover-top">
+              <span class="badge-tag" style="background:rgba(99,102,241,0.3);">${t.category}</span>
+              <span style="font-size:12px;opacity:0.8;">${t.sales_count || 40}+ downloads</span>
+            </div>
+            <div class="cover-icon" style="font-size:36px;">${t.title.slice(0, 2).toUpperCase()}</div>
+          </div>
+          <div class="card-body">
+            <h3>${t.title}</h3>
+            <p class="card-desc">${t.description}</p>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:14px; background:var(--soft); padding:6px 10px; border-radius:6px;">
+              <b>Tech Stack:</b> ${t.tags}
+            </div>
+            <div class="card-footer">
+              <div class="price-tag ${t.is_free ? 'free' : ''}">
+                ${t.is_free ? 'FREE' : '৳ ' + t.price.toLocaleString()}
+              </div>
+              <div style="display:flex; gap:8px;">
+                ${t.live_preview_url && t.live_preview_url !== '#' ? `<a class="btn btn-secondary btn-sm" href="${t.live_preview_url}" target="_blank">Live Preview</a>` : ''}
+                <button class="btn btn-primary btn-sm" onclick="window.openCheckoutModal({type:'template', id:'${t.id}', slug:'${t.slug}', title:'${t.title.replace(/'/g, "\\'")}', price:${t.price}, is_free:${t.is_free}})">
+                  ${t.is_free ? 'Download' : 'Buy License'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('tplSearchInput')?.addEventListener('input', renderTemplates);
+    document.getElementById('tplCategorySelect')?.addEventListener('change', renderTemplates);
+
+    document.addEventListener('DOMContentLoaded', loadTemplates);
+  </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Classroom — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+
+  <!-- Top Classroom Bar -->
+  <header class="site-header" style="height:60px;">
+    <div class="container header-inner">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <a class="brand" href="../student/">
+          <span class="brand-mark" style="width:32px;height:32px;font-size:12px;">AA</span>
+          <span style="font-size:16px;">Ahama Academy</span>
+        </a>
+        <span style="color:var(--border);">|</span>
+        <span id="classroomCourseName" style="font-weight:700; font-size:14px; max-width:320px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          Loading course...
+        </span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted);">
+          <span>Your Progress:</span>
+          <strong id="classroomProgressText" style="color:var(--text);">0%</strong>
+        </div>
+        <button class="theme-btn btn-sm" id="themeBtn">💻 System</button>
+        <a class="btn btn-secondary btn-sm" href="../student/">Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Classroom Split View -->
+  <div class="classroom-layout">
+    
+    <!-- Main Left: Video Player & Lecture Notes -->
+    <main class="classroom-main">
+      <div class="classroom-player-wrap">
+        <iframe id="classroomVideoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+
+      <!-- Lecture Action & Navigation Bar -->
+      <div class="classroom-nav-bar">
+        <div class="lecture-info">
+          <span class="eyebrow" id="activeLectureModule" style="margin-bottom:4px;">MODULE 1</span>
+          <h2 id="activeLectureTitle">Selecting Lesson...</h2>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button class="btn btn-secondary btn-sm" id="prevLessonBtn" onclick="navigateLesson(-1)">← Previous</button>
+          <button class="btn btn-primary btn-sm" id="markCompleteBtn" onclick="toggleCurrentLessonComplete()">✓ Mark Complete</button>
+          <button class="btn btn-secondary btn-sm" id="nextLessonBtn" onclick="navigateLesson(1)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Classroom Tabs -->
+      <div class="classroom-tabs">
+        <button class="classroom-tab active" onclick="switchClassTab('overview', this)">Lesson Overview</button>
+        <button class="classroom-tab" onclick="switchClassTab('resources', this)">Resources & Code</button>
+        <button class="classroom-tab" onclick="switchClassTab('qa', this)">Q&A & Discussion</button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div id="tabContentOverview">
+        <p style="color:var(--text); line-height:1.7;" id="activeLectureSummary">
+          Welcome to this lesson! Follow along with the video, replicate the steps in your IDE, and build the module project.
+        </p>
+        <div class="panel" style="background:var(--soft); border-style:dashed;">
+          <h4 style="margin:0 0 8px;">💡 Instructor Tip</h4>
+          <p style="font-size:14px; color:var(--muted); margin:0;">
+            Stuck with a compiler error or Gradle issue? Join our Telegram group or use the Q&A tab below with your exact stack trace.
+          </p>
+        </div>
+      </div>
+
+      <div id="tabContentResources" style="display:none;">
+        <div class="panel">
+          <h4 style="margin:0 0 12px;">Lesson Assets & Downloads</h4>
+          <ul style="padding-left:20px; font-size:14px; line-height:2;">
+            <li><a href="https://github.com/sahariyar" target="_blank" style="color:var(--primary); font-weight:600;">📦 Download Starter Project Source Code (.zip)</a></li>
+            <li><a href="#" style="color:var(--primary); font-weight:600;">📄 Android Studio Keyboard Shortcuts Cheat Sheet (PDF)</a></li>
+            <li><a href="#" style="color:var(--primary); font-weight:600;">🔗 Official Android Developer Documentation Reference</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="tabContentQa" style="display:none;">
+        <div class="panel">
+          <h4 style="margin:0 0 12px;">Ask the Instructor</h4>
+          <div class="form-group">
+            <textarea class="form-input" rows="3" placeholder="Have a question about this lecture? Post it here..."></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="window.showToast('Question submitted to instructor!', 'success')">Post Question</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Sidebar Right: Curriculum Accordion -->
+    <aside class="classroom-sidebar">
+      <div class="classroom-sidebar-head">
+        <h3>Course Content</h3>
+        <span id="curriculumProgressCount" style="font-size:12px; color:var(--muted);">0 / 0 completed</span>
+      </div>
+
+      <div id="classroomCurriculumList" style="flex:1;">
+        <!-- Dynamically Populated Curriculum -->
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseSlug = urlParams.get('course') || 'app-development-with-java';
+    let requestedLessonId = urlParams.get('lesson');
+
+    let currentCourse = null;
+    let lessons = [];
+    let completedLessonIds = [];
+    let activeLessonIndex = 0;
+
+    async function initClassroom() {
+      try {
+        const res = await window.AhamaAPI.getCourse(courseSlug);
+        currentCourse = res.course;
+        lessons = res.curriculum || [];
+
+        document.getElementById('classroomCourseName').textContent = currentCourse.title;
+        document.title = `${currentCourse.title} — Classroom`;
+
+        // Load existing student progress
+        const dashRes = await window.AhamaAPI.getStudentDashboard();
+        const enr = (dashRes.enrollments || []).find(e => e.course_id === currentCourse.id || e.slug === currentCourse.slug);
+        if (enr) {
+          // If in local mock store, read completed_lessons
+          const store = JSON.parse(localStorage.getItem('ahama_local_d1_store') || '{}');
+          const localEnr = (store.enrollments || []).find(e => e.course_id === currentCourse.id);
+          completedLessonIds = localEnr ? localEnr.completed_lessons || [] : [];
+        }
+
+        // Determine initial active lesson
+        if (requestedLessonId) {
+          const idx = lessons.findIndex(l => l.id === requestedLessonId);
+          if (idx !== -1) activeLessonIndex = idx;
+        }
+
+        renderCurriculumSidebar();
+        loadLesson(activeLessonIndex);
+        updateProgressUI();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderCurriculumSidebar() {
+      const listEl = document.getElementById('classroomCurriculumList');
+      if (!listEl) return;
+
+      listEl.innerHTML = lessons.map((l, i) => {
+        const isCompleted = completedLessonIds.includes(l.id);
+        const isActive = i === activeLessonIndex;
+
+        return `
+          <div class="lesson-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" onclick="selectLesson(${i})">
+            <div class="check-icon">${isCompleted ? '✓' : ''}</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;">${l.lesson_title}</div>
+              <small style="color:var(--muted);">${l.module_title}</small>
+            </div>
+            <span style="font-size:11px; color:var(--muted);">${l.duration || '15m'}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadLesson(index) {
+      if (index < 0 || index >= lessons.length) return;
+      activeLessonIndex = index;
+      const lesson = lessons[index];
+
+      document.getElementById('activeLectureModule').textContent = (lesson.module_title || 'MODULE').toUpperCase();
+      document.getElementById('activeLectureTitle').textContent = lesson.lesson_title;
+
+      // Video Source
+      const iframe = document.getElementById('classroomVideoIframe');
+      if (iframe) {
+        let embed = lesson.video_url || 'https://www.youtube.com/embed/fis26HvvDII';
+        // Ensure clean autoplay/embed parameters
+        if (!embed.includes('?')) embed += '?rel=0&modestbranding=1';
+        iframe.src = embed;
+      }
+
+      // Complete button state
+      const isCompleted = completedLessonIds.includes(lesson.id);
+      const btn = document.getElementById('markCompleteBtn');
+      if (btn) {
+        btn.textContent = isCompleted ? '✓ Completed' : 'Mark Complete';
+        btn.className = isCompleted ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm';
+      }
+
+      // Prev / Next button states
+      document.getElementById('prevLessonBtn').disabled = (index === 0);
+      document.getElementById('nextLessonBtn').disabled = (index === lessons.length - 1);
+
+      renderCurriculumSidebar();
+    }
+
+    function selectLesson(index) {
+      loadLesson(index);
+    }
+
+    function navigateLesson(dir) {
+      const nextIdx = activeLessonIndex + dir;
+      if (nextIdx >= 0 && nextIdx < lessons.length) {
+        loadLesson(nextIdx);
+      }
+    }
+
+    function toggleCurrentLessonComplete() {
+      const lesson = lessons[activeLessonIndex];
+      if (!lesson) return;
+
+      if (!completedLessonIds.includes(lesson.id)) {
+        completedLessonIds.push(lesson.id);
+        window.AhamaAPI.updateLessonProgress(currentCourse.id, lesson.id);
+        window.showToast('Lesson marked as completed! 🎉', 'success');
+      } else {
+        completedLessonIds = completedLessonIds.filter(id => id !== lesson.id);
+      }
+
+      loadLesson(activeLessonIndex);
+      updateProgressUI();
+    }
+
+    function updateProgressUI() {
+      const total = lessons.length || 1;
+      const done = completedLessonIds.length;
+      const pct = Math.min(100, Math.round((done / total) * 100));
+
+      const pctEl = document.getElementById('classroomProgressText');
+      if (pctEl) pctEl.textContent = `${pct}%`;
+
+      const cntEl = document.getElementById('curriculumProgressCount');
+      if (cntEl) cntEl.textContent = `${done} / ${total} completed`;
+
+      if (pct === 100) {
+        window.showToast('Congratulations! You completed the course! Certificate ready in your dashboard.', 'success');
+      }
+    }
+
+    function switchClassTab(tabId, btn) {
+      document.querySelectorAll('.classroom-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.getElementById('tabContentOverview').style.display = tabId === 'overview' ? 'block' : 'none';
+      document.getElementById('tabContentResources').style.display = tabId === 'resources' ? 'block' : 'none';
+      document.getElementById('tabContentQa').style.display = tabId === 'qa' ? 'block' : 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', initClassroom);
+  </script>
+</body>
+</html>

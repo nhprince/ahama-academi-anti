@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course Catalog — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../">
+        <span class="brand-mark">AA</span>
+        <span>Ahama Academy</span>
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="../">Home</a>
+        <a class="active" href="./">Courses</a>
+        <a href="../templates/">Templates & Themes</a>
+        <a href="../docs/">Docs</a>
+        <a href="../about/">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn">💻 System</button>
+        <div id="headerAuth"></div>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:40px; padding-bottom:80px;">
+    <div style="margin-bottom:32px;">
+      <span class="eyebrow">EXPLORE CURRICULUM</span>
+      <h1 style="font-size: clamp(32px, 4vw, 48px); margin:0 0 10px;">Master Real-World Development</h1>
+      <p style="color:var(--muted); font-size:16px; margin:0;">
+        From Java foundations to native Android apps and Cloudflare serverless engineering.
+      </p>
+    </div>
+
+    <!-- Search and Filters Bar -->
+    <div style="display:flex; gap:12px; margin-bottom:32px; flex-wrap:wrap;">
+      <input type="search" id="courseSearchInput" class="form-input" placeholder="Search by title, technology, or topic..." style="flex:1; min-width:260px;">
+      
+      <select id="courseCategorySelect" class="form-input" style="width:auto; min-width:180px;">
+        <option value="all">All Categories</option>
+        <option value="Mobile Development">Mobile Development</option>
+        <option value="Programming">Programming</option>
+        <option value="Web Development">Web Development</option>
+      </select>
+
+      <select id="courseTypeSelect" class="form-input" style="width:auto; min-width:140px;">
+        <option value="all">All Types</option>
+        <option value="free">Free Courses</option>
+        <option value="premium">Premium Courses</option>
+      </select>
+    </div>
+
+    <div id="courseCatalogGrid" class="course-grid">
+      <!-- Dynamically Populated -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container copyright">
+      © 2026 Ahama Academy. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    let allCourses = [];
+
+    async function loadCourses() {
+      const res = await window.AhamaAPI.getCourses();
+      allCourses = res.courses || [];
+      renderCourses();
+    }
+
+    function renderCourses() {
+      const q = (document.getElementById('courseSearchInput')?.value || '').toLowerCase().trim();
+      const cat = document.getElementById('courseCategorySelect')?.value || 'all';
+      const type = document.getElementById('courseTypeSelect')?.value || 'all';
+
+      const filtered = allCourses.filter(c => {
+        const matchesQ = !q || c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q) || c.category.toLowerCase().includes(q);
+        const matchesCat = cat === 'all' || c.category === cat;
+        const matchesType = type === 'all' || (type === 'free' ? c.is_free : !c.is_free);
+        return matchesQ && matchesCat && matchesType;
+      });
+
+      const grid = document.getElementById('courseCatalogGrid');
+      if (!grid) return;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">No courses found matching your criteria.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(c => `
+        <article class="course-card">
+          <div class="course-cover ${c.is_free ? 'free' : 'premium'}">
+            <div class="cover-top">
+              <span class="badge-tag">${c.badge || (c.is_free ? 'FREE' : 'PREMIUM')}</span>
+              <span style="font-size:12px;opacity:0.8;">${c.category}</span>
+            </div>
+            <div class="cover-icon">${c.title.slice(0, 2).toUpperCase()}</div>
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span>${c.level}</span>
+              <span>${c.lessons_count || 10} Lessons</span>
+            </div>
+            <h3><a href="view.html?slug=${c.slug}">${c.title}</a></h3>
+            <p class="card-desc">${c.description}</p>
+            <div class="card-footer">
+              <div class="price-tag ${c.is_free ? 'free' : ''}">
+                ${c.is_free ? 'FREE' : '৳ ' + c.price.toLocaleString()}
+              </div>
+              <a class="btn btn-primary btn-sm" href="view.html?slug=${c.slug}">
+                View Details →
+              </a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('courseSearchInput')?.addEventListener('input', renderCourses);
+    document.getElementById('courseCategorySelect')?.addEventListener('change', renderCourses);
+    document.getElementById('courseTypeSelect')?.addEventListener('change', renderCourses);
+
+    document.addEventListener('DOMContentLoaded', loadCourses);
+  </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ahama Academy — Practical courses, website themes & Android app templates built for developers.">
+  <title>Ahama Academy — Practical Courses & Digital Templates</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Dynamic CMS Announcement Bar -->
+  <div class="announcement-bar" id="announcementBar" style="display:none;">
+    <span class="announcement-text">🎉 50% Off on all Android & Web Masterclasses! Use coupon <b>BANGLA50</b></span>
+    <button class="announcement-close" onclick="this.parentElement.style.display='none'">✕</button>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./">
+        <span class="brand-mark">AA</span>
+        <span>Ahama Academy</span>
+      </a>
+
+      <nav class="desktop-nav">
+        <a class="active" href="./">Home</a>
+        <a href="courses/">Courses</a>
+        <a href="templates/">Templates & Themes</a>
+        <a href="docs/">Docs</a>
+        <a href="about/">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">💻 System</button>
+        <div id="headerAuth">
+          <a class="btn btn-secondary btn-sm" href="login/">Sign In</a>
+          <a class="btn btn-primary btn-sm" href="courses/">Explore</a>
+        </div>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero container">
+      <div>
+        <span class="eyebrow">DIGITAL EDUCATION & TEMPLATES</span>
+        <h1 id="heroHeadline">Master Code.<br><span>Build Real Things.</span></h1>
+        <p class="hero-text" id="heroSubtext">
+          Project-based native Android, Java, and modern Full-Stack courses designed to turn you into an industry-ready engineer. Download production-ready templates & themes.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="courses/">Browse Courses</a>
+          <a class="btn btn-secondary" href="templates/">Shop Templates</a>
+        </div>
+
+        <div class="trust-badges">
+          <span>✓ Project-based Curriculum</span>
+          <span>✓ bKash & Nagad Accepted</span>
+          <span>✓ Verified Certificates</span>
+        </div>
+      </div>
+
+      <!-- Hero Interactive Card -->
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span style="font-weight:700;font-size:13px;">● Student Learning Center</span>
+          <span class="live-pill">Live LMS</span>
+        </div>
+
+        <div class="hero-mini-course">
+          <small>CURRENT ENROLLMENT</small>
+          <h4>App Development with Java (Native Android)</h4>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 42%;"></div>
+          </div>
+          <div class="progress-meta">
+            <span>42% completed</span>
+            <span>3 of 7 lessons done</span>
+          </div>
+        </div>
+
+        <div class="stat-pills">
+          <div class="stat-pill">
+            <strong>4+</strong>
+            <span>Active Courses</span>
+          </div>
+          <div class="stat-pill">
+            <strong>4+</strong>
+            <span>Digital Themes</span>
+          </div>
+          <div class="stat-pill">
+            <strong>1.2k+</strong>
+            <span>Students</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section class="section container" id="courses">
+      <div class="section-header">
+        <div>
+          <span class="eyebrow">CURATED CURRICULUM</span>
+          <h2>Featured Masterclasses</h2>
+          <p>Practical, zero-fluff courses designed to build your engineering portfolio.</p>
+        </div>
+        <a class="btn btn-secondary btn-sm" href="courses/">View All Courses →</a>
+      </div>
+
+      <div id="homeCoursesGrid" class="course-grid">
+        <!-- Rendered dynamically via API -->
+      </div>
+    </section>
+
+    <!-- Digital Templates & Themes Section -->
+    <section class="section container" style="border-top: 1px solid var(--border);">
+      <div class="section-header">
+        <div>
+          <span class="eyebrow">DIGITAL STORE</span>
+          <h2>Website Themes & App UI Kits</h2>
+          <p>Production-ready source codes, clean architecture, and instant downloads.</p>
+        </div>
+        <a class="btn btn-secondary btn-sm" href="templates/">View All Templates →</a>
+      </div>
+
+      <div id="homeTemplatesGrid" class="template-grid">
+        <!-- Rendered dynamically via API -->
+      </div>
+    </section>
+
+    <!-- Why Ahama Section -->
+    <section class="section" style="background:var(--soft); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+      <div class="container">
+        <div class="section-header" style="text-align:center; display:block; margin-bottom:50px;">
+          <span class="eyebrow">THE AHAMA DIFFERENCE</span>
+          <h2>Why Learn & Build With Us?</h2>
+          <p style="max-width:600px; margin:auto;">Built with pure performance, localized pricing, and zero unnecessary fluff.</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
+          <div class="panel" style="margin-bottom:0;">
+            <div style="font-size:28px; margin-bottom:12px;">⚡</div>
+            <h3>100% Practical Building</h3>
+            <p style="color:var(--muted); font-size:14px; margin:0;">
+              Every lesson culminates in real code: Android apps, responsive websites, and production-ready APIs.
+            </p>
+          </div>
+
+          <div class="panel" style="margin-bottom:0;">
+            <div style="font-size:28px; margin-bottom:12px;">🇧🇩</div>
+            <h3>Native bKash & Nagad</h3>
+            <p style="color:var(--muted); font-size:14px; margin:0;">
+              Zero international credit card barriers. Seamless automated and TrxID verification for instant local access.
+            </p>
+          </div>
+
+          <div class="panel" style="margin-bottom:0;">
+            <div style="font-size:28px; margin-bottom:12px;">📜</div>
+            <h3>Verifiable Certificates</h3>
+            <p style="color:var(--muted); font-size:14px; margin:0;">
+              Receive official digital certificates with cryptographic IDs upon finishing your masterclasses.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="./" style="margin-bottom:12px;">
+          <span class="brand-mark">AA</span>
+          <span>Ahama Academy</span>
+        </a>
+        <p style="color:var(--muted); font-size:14px; max-width:300px;">
+          Practical courses and premium digital templates for developers and creators.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Learning</h4>
+        <a href="courses/">All Courses</a>
+        <a href="classroom/">Student Classroom</a>
+        <a href="student/">My Dashboard</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Digital Store</h4>
+        <a href="templates/">Website Themes</a>
+        <a href="templates/">Android App Kits</a>
+        <a href="admin/">Admin Portal</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="docs/">Documentation</a>
+        <a href="about/">About Us</a>
+        <a href="mailto:support@ahama.academy">Support</a>
+      </div>
+    </div>
+
+    <div class="container copyright">
+      © 2026 Ahama Academy. Powered by Cloudflare Edge Architecture.
+    </div>
+  </footer>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script>
+    // Populate Featured Courses & Templates on Home
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const [courseRes, tplRes] = await Promise.all([
+          window.AhamaAPI.getCourses(),
+          window.AhamaAPI.getTemplates()
+        ]);
+
+        const cGrid = document.getElementById('homeCoursesGrid');
+        if (cGrid && courseRes.courses) {
+          cGrid.innerHTML = courseRes.courses.slice(0, 3).map(c => `
+            <article class="course-card">
+              <div class="course-cover ${c.is_free ? 'free' : 'premium'}">
+                <div class="cover-top">
+                  <span class="badge-tag">${c.badge || (c.is_free ? 'FREE' : 'PREMIUM')}</span>
+                  <span style="font-size:12px;opacity:0.8;">${c.category}</span>
+                </div>
+                <div class="cover-icon">${c.title.slice(0, 2).toUpperCase()}</div>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>${c.level}</span>
+                  <span>${c.lessons_count || 12} Lessons</span>
+                </div>
+                <h3><a href="courses/view.html?slug=${c.slug}">${c.title}</a></h3>
+                <p class="card-desc">${c.description}</p>
+                <div class="card-footer">
+                  <div class="price-tag ${c.is_free ? 'free' : ''}">
+                    ${c.is_free ? 'FREE' : '৳ ' + c.price.toLocaleString()}
+                  </div>
+                  <button class="btn btn-primary btn-sm" onclick="window.openCheckoutModal({type:'course', id:'${c.id}', slug:'${c.slug}', title:'${c.title.replace(/'/g, "\\'")}', price:${c.price}, is_free:${c.is_free}})">
+                    ${c.is_free ? 'Enroll Free' : 'Enroll Now'}
+                  </button>
+                </div>
+              </div>
+            </article>
+          `).join('');
+        }
+
+        const tGrid = document.getElementById('homeTemplatesGrid');
+        if (tGrid && tplRes.templates) {
+          tGrid.innerHTML = tplRes.templates.slice(0, 3).map(t => `
+            <article class="template-card">
+              <div class="course-cover" style="background:linear-gradient(135deg,#312e81,#1e1b4b);height:140px;">
+                <div class="cover-top">
+                  <span class="badge-tag" style="background:rgba(99,102,241,0.3);">${t.category}</span>
+                  <span style="font-size:12px;opacity:0.8;">${t.sales_count || 50}+ downloads</span>
+                </div>
+                <div class="cover-icon" style="font-size:32px;">${t.title.slice(0, 2).toUpperCase()}</div>
+              </div>
+              <div class="card-body">
+                <h3>${t.title}</h3>
+                <p class="card-desc">${t.description}</p>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;"><b>Tags:</b> ${t.tags}</div>
+                <div class="card-footer">
+                  <div class="price-tag ${t.is_free ? 'free' : ''}">
+                    ${t.is_free ? 'FREE' : '৳ ' + t.price.toLocaleString()}
+                  </div>
+                  <div style="display:flex;gap:6px;">
+                    ${t.live_preview_url && t.live_preview_url !== '#' ? `<a class="btn btn-secondary btn-sm" href="${t.live_preview_url}" target="_blank">Preview</a>` : ''}
+                    <button class="btn btn-primary btn-sm" onclick="window.openCheckoutModal({type:'template', id:'${t.id}', slug:'${t.slug}', title:'${t.title.replace(/'/g, "\\'")}', price:${t.price}, is_free:${t.is_free}})">
+                      ${t.is_free ? 'Download' : 'Get Template'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `).join('');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>

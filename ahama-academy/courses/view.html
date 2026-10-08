@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course Overview — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../">
+        <span class="brand-mark">AA</span>
+        <span>Ahama Academy</span>
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="../">Home</a>
+        <a class="active" href="./">Courses</a>
+        <a href="../templates/">Templates & Themes</a>
+        <a href="../docs/">Docs</a>
+        <a href="../about/">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn">💻 System</button>
+        <div id="headerAuth"></div>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:40px; padding-bottom:90px;">
+    <div style="display:grid; grid-template-columns: 1fr 380px; gap:40px; align-items:start;" class="course-detail-layout">
+      
+      <!-- Left Column: Course Info & Curriculum -->
+      <div>
+        <div style="margin-bottom:28px;">
+          <span class="eyebrow" id="viewCourseCategory">COURSE</span>
+          <h1 id="viewCourseTitle" style="font-size:clamp(32px, 4vw, 50px); line-height:1.1; margin:0 0 16px;">Loading course...</h1>
+          <p id="viewCourseDesc" style="color:var(--muted); font-size:17px; line-height:1.6; margin:0 0 20px;"></p>
+          
+          <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--muted);">
+            <span style="background:var(--soft); padding:6px 12px; border-radius:6px; border:1px solid var(--border);">
+              👨‍🏫 Instructor: <b id="viewCourseInstructor" style="color:var(--text);">Ahama Academy</b>
+            </span>
+            <span style="background:var(--soft); padding:6px 12px; border-radius:6px; border:1px solid var(--border);">
+              🎯 Level: <b id="viewCourseLevel" style="color:var(--text);">Beginner</b>
+            </span>
+            <span style="background:var(--soft); padding:6px 12px; border-radius:6px; border:1px solid var(--border);">
+              🌐 Language: <b style="color:var(--text);">Bangla & English</b>
+            </span>
+          </div>
+        </div>
+
+        <!-- What You Will Learn -->
+        <div class="panel">
+          <h3 style="margin-bottom:16px;">What you'll learn in this masterclass</h3>
+          <ul style="padding-left:20px; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:14px; color:var(--text);" id="viewCourseOutcomes">
+            <li>Build complete, native applications from scratch</li>
+            <li>Master industry-standard architecture patterns</li>
+            <li>Understand UI design, responsive constraints & APIs</li>
+            <li>Deploy real code and build your engineering portfolio</li>
+          </ul>
+        </div>
+
+        <!-- Curriculum Breakdown -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Course Curriculum</h3>
+            <span id="curriculumSummary" style="font-size:13px; color:var(--muted);"></span>
+          </div>
+          
+          <div id="curriculumList" style="border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Sticky Enrollment Card -->
+      <aside style="position:sticky; top:95px;">
+        <div class="hero-card" style="padding:0; overflow:hidden;">
+          <div style="height:210px; background:linear-gradient(135deg, #1e1b4b, #312e81); display:grid; place-items:center; color:#fff; position:relative;">
+            <div style="text-align:center;">
+              <div style="width:56px; height:56px; border-radius:50%; background:var(--primary); display:grid; place-items:center; margin:0 auto 10px; font-size:20px; box-shadow:0 4px 15px rgba(225,29,72,0.4);">
+                ▶
+              </div>
+              <span style="font-size:12px; font-weight:700; letter-spacing:0.08em;">PREVIEW THIS COURSE</span>
+            </div>
+          </div>
+
+          <div style="padding:24px;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px;">
+              <div style="font-size:32px; font-weight:800; font-family:'Outfit', sans-serif;" id="viewCardPrice">৳ 1,499</div>
+              <span class="live-pill" id="viewCardBadge">Bestseller</span>
+            </div>
+
+            <div id="enrollmentActionArea">
+              <!-- Rendered depending on enrollment status -->
+            </div>
+
+            <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); line-height:1.7;">
+              <div>✓ Instant access on mobile & desktop</div>
+              <div>✓ Official certificate of completion</div>
+              <div>✓ Source code & downloadable assets</div>
+              <div>✓ Direct instructor Q&A access</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container copyright">
+      © 2026 Ahama Academy. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug') || 'app-development-with-java';
+    let currentCourse = null;
+    let isStudentEnrolled = false;
+
+    async function loadCourseDetail() {
+      try {
+        const res = await window.AhamaAPI.getCourse(slug);
+        currentCourse = res.course;
+        isStudentEnrolled = res.isEnrolled;
+        const cur = res.curriculum || [];
+
+        document.title = `${currentCourse.title} — Ahama Academy`;
+        document.getElementById('viewCourseCategory').textContent = (currentCourse.category || 'COURSE').toUpperCase();
+        document.getElementById('viewCourseTitle').textContent = currentCourse.title;
+        document.getElementById('viewCourseDesc').textContent = currentCourse.description;
+        document.getElementById('viewCourseInstructor').textContent = currentCourse.instructor || 'Ahama Academy';
+        document.getElementById('viewCourseLevel').textContent = currentCourse.level || 'Beginner';
+        document.getElementById('viewCardPrice').innerHTML = currentCourse.is_free ? '<span style="color:var(--success);">FREE</span>' : `৳ ${currentCourse.price.toLocaleString()}`;
+        document.getElementById('viewCardBadge').textContent = currentCourse.badge || (currentCourse.is_free ? 'FREE' : 'PREMIUM');
+
+        // Curriculum
+        document.getElementById('curriculumSummary').textContent = `${cur.length} Lessons · Full Video Curriculum`;
+        const curList = document.getElementById('curriculumList');
+        curList.innerHTML = cur.map((item, idx) => `
+          <div class="lesson-item ${item.is_preview ? 'active' : ''}" style="padding:14px 18px;">
+            <span style="font-weight:700; color:var(--primary); font-size:12px; width:24px;">${String(idx + 1).padStart(2, '0')}</span>
+            <div style="flex:1;">
+              <b style="display:block; font-size:14px;">${item.lesson_title}</b>
+              <small style="color:var(--muted);">${item.module_title}</small>
+            </div>
+            <span style="font-size:12px; color:var(--muted);">${item.duration || '15m'}</span>
+            ${item.is_preview 
+              ? `<a href="../classroom/?course=${currentCourse.slug}&lesson=${item.id}" class="btn btn-secondary btn-sm" style="margin-left:8px; padding:4px 8px; font-size:11px;">Preview</a>` 
+              : `<span style="font-size:12px; color:var(--muted); margin-left:8px;">🔒</span>`}
+          </div>
+        `).join('');
+
+        // Action Area
+        const actionArea = document.getElementById('enrollmentActionArea');
+        if (isStudentEnrolled) {
+          actionArea.innerHTML = `
+            <div style="background:rgba(16,185,129,0.1); border-radius:var(--radius-md); padding:12px; margin-bottom:12px; font-size:13px; color:var(--success); font-weight:600; text-align:center;">
+              ✓ You are enrolled in this course!
+            </div>
+            <a class="btn btn-primary btn-full" href="../classroom/?course=${currentCourse.slug}">
+              Go to Classroom →
+            </a>
+          `;
+        } else {
+          actionArea.innerHTML = `
+            <button class="btn btn-primary btn-full" onclick="window.openCheckoutModal({type:'course', id:'${currentCourse.id}', slug:'${currentCourse.slug}', title:'${currentCourse.title.replace(/'/g, "\\'")}', price:${currentCourse.price}, is_free:${currentCourse.is_free}})">
+              ${currentCourse.is_free ? 'Enroll for Free' : 'Enroll with bKash / Nagad'}
+            </button>
+            <p style="text-align:center; font-size:12px; color:var(--muted); margin:10px 0 0;">
+              Fast manual TrxID verification or instant access.
+            </p>
+          `;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadCourseDetail);
+  </script>
+</body>
+</html>

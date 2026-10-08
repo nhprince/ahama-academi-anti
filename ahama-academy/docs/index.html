@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Architecture & Cloudflare Setup — Ahama Academy</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../">
+        <span class="brand-mark">AA</span>
+        <span>Ahama Academy</span>
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="../">Home</a>
+        <a href="../courses/">Courses</a>
+        <a href="../templates/">Templates & Themes</a>
+        <a class="active" href="./">Docs</a>
+        <a href="../about/">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn">💻 System</button>
+        <div id="headerAuth"></div>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:860px; padding-top:40px; padding-bottom:80px;">
+    <span class="eyebrow">DEVELOPER DOCUMENTATION</span>
+    <h1 style="font-size:clamp(32px, 4vw, 48px); margin:0 0 12px;">Architecture & Cloudflare Setup</h1>
+    <p style="color:var(--muted); font-size:17px; margin-bottom:40px;">
+      100% Free Tier, zero-build, auto-deploying digital academy & marketplace on Cloudflare Pages.
+    </p>
+
+    <!-- SECTION 1 -->
+    <div class="panel">
+      <h3>1. Architecture Overview</h3>
+      <p style="color:var(--muted); font-size:14px; line-height:1.7;">
+        Ahama Academy runs natively on the Cloudflare edge without expensive servers, npm build scripts, or recurring hosting bills:
+      </p>
+      <ul style="padding-left:20px; font-size:14px; line-height:2;">
+        <li><b>Cloudflare Pages (Frontend):</b> Pure HTML5, modern CSS3, and native JavaScript. Loads instantly worldwide with 0ms cold starts.</li>
+        <li><b>Cloudflare Pages Functions (Backend):</b> Edge workers located in <code>/functions/api/</code> handling authentication, checkout, CRM, and dynamic CMS.</li>
+        <li><b>Cloudflare D1 (Database):</b> Edge SQLite database with 5 million read rows/day free tier.</li>
+        <li><b>Zero-Card Hybrid Storage:</b> YouTube unlisted embeds for unlimited video bandwidth + GitHub Releases / Supabase for large template downloads.</li>
+      </ul>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="panel">
+      <h3>2. 1-Click Deployment to Cloudflare Pages</h3>
+      <ol style="padding-left:20px; font-size:14px; line-height:2;">
+        <li>Push this repository to your GitHub account:
+          <pre style="background:var(--soft); padding:12px; border-radius:8px; border:1px solid var(--border); overflow-x:auto;"><code>git init
+git add .
+git commit -m "Ahama Academy Production Release"
+git remote add origin https://github.com/your-username/ahama-academy.git
+git push -u origin main</code></pre>
+        </li>
+        <li>Log in to <a href="https://dash.cloudflare.com" target="_blank" style="color:var(--primary); font-weight:bold;">Cloudflare Dashboard</a>.</li>
+        <li>Go to <b>Workers & Pages</b> → <b>Create Application</b> → <b>Pages</b> → <b>Connect to Git</b>.</li>
+        <li>Select your repository. Under <b>Build Settings</b>:
+          <ul>
+            <li>Framework preset: <b>None</b></li>
+            <li>Build command: <i>(leave empty)</i></li>
+            <li>Build output directory: <b>/</b></li>
+          </ul>
+        </li>
+        <li>Click <b>Save and Deploy</b>. Your site is now live with automatic deployment on every push!</li>
+      </ol>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="panel">
+      <h3>3. Connecting Cloudflare D1 Database</h3>
+      <p style="color:var(--muted); font-size:14px;">Run the following commands using the free Wrangler CLI:</p>
+      <pre style="background:var(--soft); padding:12px; border-radius:8px; border:1px solid var(--border); overflow-x:auto;"><code># 1. Create your free edge database
+npx wrangler d1 create ahama-db
+
+# 2. Execute the schema
+npx wrangler d1 execute ahama-db --file=./d1/schema.sql
+
+# 3. Seed demo courses, templates, and admin user
+npx wrangler d1 execute ahama-db --file=./d1/seed.sql</code></pre>
+      <p style="color:var(--muted); font-size:13px; margin-top:12px;">
+        In Cloudflare Dashboard, go to your Pages project → <b>Settings</b> → <b>Functions</b> → <b>D1 database bindings</b>, and add variable name <code>DB</code> bound to <code>ahama-db</code>.
+      </p>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="panel">
+      <h3>4. Default Demo Credentials</h3>
+      <div style="background:var(--soft); padding:14px; border-radius:8px; border:1px solid var(--border); font-size:14px; line-height:1.8;">
+        <div>👑 <b>Admin:</b> <code>admin@ahama.academy</code> / Password: <code>admin123</code></div>
+        <div>👨‍🎓 <b>Student:</b> <code>student@ahama.academy</code> / Password: <code>student123</code></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container copyright">
+      © 2026 Ahama Academy. All rights reserved.
+    </div>
+  </footer>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/site.js"></script>
+</body>
+</html>
