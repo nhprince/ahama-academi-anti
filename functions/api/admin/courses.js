@@ -5,7 +5,7 @@ export async function onRequestGet(context) {
     return json({ error: "Unauthorized" }, 403);
   }
 
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
   if (!db) {
     return json({ courses: [] });
   }
@@ -31,20 +31,20 @@ export async function onRequestPost(context) {
     id,
     title,
     slug,
+    subtitle,
     description,
     category,
     level,
     price,
-    is_free,
     badge,
-    lessons // optional array of { module_title, lesson_title, video_url, duration, is_preview }
+    lessons
   } = body;
 
   if (!title || !slug) {
     return json({ error: "Title and slug are required" }, 400);
   }
 
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
   if (!db) {
     return json({ success: true, message: "Course saved (Mock mode)" });
   }
@@ -52,21 +52,21 @@ export async function onRequestPost(context) {
   const courseId = id || ("crs_" + Date.now().toString(36));
 
   await db.prepare(`
-    INSERT OR REPLACE INTO courses (id, slug, title, description, category, level, price, is_free, badge)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT OR REPLACE INTO courses (id, slug, title, subtitle, description, category, level, price, is_free, badge)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     courseId,
     slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, "-"),
     title,
+    subtitle || "",
     description || "",
     category || "General",
     level || "Beginner",
     parseInt(price) || 0,
-    is_free ? 1 : 0,
+    parseInt(price) === 0 ? 1 : 0,
     badge || ""
   ).run();
 
-  // If lessons provided, sync curriculum
   if (Array.isArray(lessons) && lessons.length > 0) {
     for (let i = 0; i < lessons.length; i++) {
       const l = lessons[i];

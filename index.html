@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Ahama Academy — Practical courses, website themes & Android app templates built for developers.">
-  <title>Ahama Academy — Practical Courses & Digital Templates</title>
+  <meta name="description" content="Ahama Academy — Practical native Android & modern web courses, digital themes & UI kits for software engineers.">
+  <title>Ahama Academy — Practical Engineering Courses & Digital Templates</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-  <!-- Dynamic CMS Announcement Bar -->
+  <!-- Dynamic CMS Announcement Marquee -->
   <div class="announcement-bar" id="announcementBar" style="display:none;">
     <span class="announcement-text">🎉 50% Off on all Android & Web Masterclasses! Use coupon <b>BANGLA50</b></span>
     <button class="announcement-close" onclick="this.parentElement.style.display='none'">✕</button>
@@ -24,18 +24,19 @@
       </a>
 
       <nav class="desktop-nav">
-        <a class="active" href="./">Home</a>
-        <a href="courses/">Courses</a>
-        <a href="templates/">Templates & Themes</a>
-        <a href="docs/">Docs</a>
-        <a href="about/">About</a>
+        <a class="active" href="./" data-i18n="nav_home">Home</a>
+        <a href="courses/" data-i18n="nav_courses">Courses</a>
+        <a href="templates/" data-i18n="nav_templates">Templates & Themes</a>
+        <a href="docs/" data-i18n="nav_docs">Docs</a>
+        <a href="about/" data-i18n="nav_about">About</a>
       </nav>
 
       <div class="header-actions">
+        <button class="lang-btn" id="langToggleBtn" onclick="window.toggleLanguage()" title="Switch Language">🌐 EN</button>
         <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">💻 System</button>
         <div id="headerAuth">
-          <a class="btn btn-secondary btn-sm" href="login/">Sign In</a>
-          <a class="btn btn-primary btn-sm" href="courses/">Explore</a>
+          <a class="btn btn-secondary btn-sm" href="login/" data-i18n="nav_signin">Sign In</a>
+          <a class="btn btn-primary btn-sm" href="courses/" data-i18n="nav_explore">Explore</a>
         </div>
         <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
       </div>
@@ -46,28 +47,31 @@
     <!-- Hero Section -->
     <section class="hero container">
       <div>
-        <span class="eyebrow">DIGITAL EDUCATION & TEMPLATES</span>
-        <h1 id="heroHeadline">Master Code.<br><span>Build Real Things.</span></h1>
-        <p class="hero-text" id="heroSubtext">
+        <span class="eyebrow" data-i18n="hero_badge">DIGITAL EDUCATION & TEMPLATES</span>
+        <h1 id="heroHeadline">
+          <span data-i18n="hero_title_1">Master Code.</span><br>
+          <span data-i18n="hero_title_2">Build Real Things.</span>
+        </h1>
+        <p class="hero-text" id="heroSubtext" data-i18n="hero_subtext">
           Project-based native Android, Java, and modern Full-Stack courses designed to turn you into an industry-ready engineer. Download production-ready templates & themes.
         </p>
 
         <div class="hero-actions">
-          <a class="btn btn-primary" href="courses/">Browse Courses</a>
-          <a class="btn btn-secondary" href="templates/">Shop Templates</a>
+          <a class="btn btn-primary" href="courses/" data-i18n="hero_btn_courses">Browse Courses</a>
+          <a class="btn btn-secondary" href="templates/" data-i18n="hero_btn_templates">Shop Templates</a>
         </div>
 
         <div class="trust-badges">
-          <span>✓ Project-based Curriculum</span>
-          <span>✓ bKash & Nagad Accepted</span>
-          <span>✓ Verified Certificates</span>
+          <span data-i18n="trust_1">✓ Project-based Curriculum</span>
+          <span data-i18n="trust_2">✓ bKash & Nagad Accepted</span>
+          <span data-i18n="trust_3">✓ Verifiable Certificates</span>
         </div>
       </div>
 
       <!-- Hero Interactive Card -->
       <div class="hero-card">
         <div class="hero-card-header">
-          <span style="font-weight:700;font-size:13px;">● Student Learning Center</span>
+          <span style="font-weight:750; font-size:13px;">● Student Learning Center</span>
           <span class="live-pill">Live LMS</span>
         </div>
 
@@ -105,10 +109,10 @@
       <div class="section-header">
         <div>
           <span class="eyebrow">CURATED CURRICULUM</span>
-          <h2>Featured Masterclasses</h2>
-          <p>Practical, zero-fluff courses designed to build your engineering portfolio.</p>
+          <h2 data-i18n="courses_heading">Featured Masterclasses</h2>
+          <p data-i18n="courses_subheading">Practical, zero-fluff courses designed to build your engineering portfolio.</p>
         </div>
-        <a class="btn btn-secondary btn-sm" href="courses/">View All Courses →</a>
+        <a class="btn btn-secondary btn-sm" href="courses/" data-i18n="courses_view_all">View All Courses →</a>
       </div>
 
       <div id="homeCoursesGrid" class="course-grid">
@@ -121,10 +125,10 @@
       <div class="section-header">
         <div>
           <span class="eyebrow">DIGITAL STORE</span>
-          <h2>Website Themes & App UI Kits</h2>
-          <p>Production-ready source codes, clean architecture, and instant downloads.</p>
+          <h2 data-i18n="templates_heading">Website Themes & App UI Kits</h2>
+          <p data-i18n="templates_subheading">Production-ready source codes, clean architecture, and instant downloads.</p>
         </div>
-        <a class="btn btn-secondary btn-sm" href="templates/">View All Templates →</a>
+        <a class="btn btn-secondary btn-sm" href="templates/" data-i18n="templates_view_all">View All Templates →</a>
       </div>
 
       <div id="homeTemplatesGrid" class="template-grid">
@@ -132,37 +136,43 @@
       </div>
     </section>
 
-    <!-- Why Ahama Section -->
+    <!-- Why Ahama Academy Section -->
     <section class="section" style="background:var(--soft); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
       <div class="container">
         <div class="section-header" style="text-align:center; display:block; margin-bottom:50px;">
           <span class="eyebrow">THE AHAMA DIFFERENCE</span>
-          <h2>Why Learn & Build With Us?</h2>
-          <p style="max-width:600px; margin:auto;">Built with pure performance, localized pricing, and zero unnecessary fluff.</p>
+          <h2>Engineered for Practical Excellence</h2>
+          <p style="max-width:600px; margin:auto;">Zero fluff, localized payment convenience, and production architecture.</p>
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px;">
           <div class="panel" style="margin-bottom:0;">
-            <div style="font-size:28px; margin-bottom:12px;">⚡</div>
+            <div style="width:44px; height:44px; border-radius:10px; background:var(--primary-light); color:var(--primary); display:grid; place-items:center; font-size:20px; font-weight:bold; margin-bottom:14px;">
+              ⚡
+            </div>
             <h3>100% Practical Building</h3>
-            <p style="color:var(--muted); font-size:14px; margin:0;">
-              Every lesson culminates in real code: Android apps, responsive websites, and production-ready APIs.
+            <p style="color:var(--text-muted); font-size:14px; margin:0;">
+              Every module culminates in production code: native Android APKs, SQLite database persistence, and serverless Cloudflare Workers.
             </p>
           </div>
 
           <div class="panel" style="margin-bottom:0;">
-            <div style="font-size:28px; margin-bottom:12px;">🇧🇩</div>
-            <h3>Native bKash & Nagad</h3>
-            <p style="color:var(--muted); font-size:14px; margin:0;">
-              Zero international credit card barriers. Seamless automated and TrxID verification for instant local access.
+            <div style="width:44px; height:44px; border-radius:10px; background:rgba(226,19,110,0.1); color:var(--bkash); display:grid; place-items:center; font-size:20px; font-weight:bold; margin-bottom:14px;">
+              🇧🇩
+            </div>
+            <h3>bKash, Nagad & Rocket</h3>
+            <p style="color:var(--text-muted); font-size:14px; margin:0;">
+              No international credit card hurdles. Pay easily in Bangladeshi Taka (৳) with instant TrxID confirmation.
             </p>
           </div>
 
           <div class="panel" style="margin-bottom:0;">
-            <div style="font-size:28px; margin-bottom:12px;">📜</div>
+            <div style="width:44px; height:44px; border-radius:10px; background:rgba(99,102,241,0.1); color:var(--accent); display:grid; place-items:center; font-size:20px; font-weight:bold; margin-bottom:14px;">
+              📜
+            </div>
             <h3>Verifiable Certificates</h3>
-            <p style="color:var(--muted); font-size:14px; margin:0;">
-              Receive official digital certificates with cryptographic IDs upon finishing your masterclasses.
+            <p style="color:var(--text-muted); font-size:14px; margin:0;">
+              Complete all lessons and quizzes to generate an official completion certificate with unique verification credentials.
             </p>
           </div>
         </div>
@@ -178,7 +188,7 @@
           <span class="brand-mark">AA</span>
           <span>Ahama Academy</span>
         </a>
-        <p style="color:var(--muted); font-size:14px; max-width:300px;">
+        <p style="color:var(--text-muted); font-size:14px; max-width:300px;" data-i18n="footer_desc">
           Practical courses and premium digital templates for developers and creators.
         </p>
       </div>
@@ -194,7 +204,7 @@
         <h4>Digital Store</h4>
         <a href="templates/">Website Themes</a>
         <a href="templates/">Android App Kits</a>
-        <a href="admin/">Admin Portal</a>
+        <a href="admin/">Admin Center</a>
       </div>
 
       <div class="footer-col">
@@ -205,15 +215,15 @@
       </div>
     </div>
 
-    <div class="container copyright">
+    <div class="container copyright" data-i18n="footer_copyright">
       © 2026 Ahama Academy. Powered by Cloudflare Edge Architecture.
     </div>
   </footer>
 
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/i18n.js"></script>
   <script src="assets/js/site.js"></script>
   <script>
-    // Populate Featured Courses & Templates on Home
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         const [courseRes, tplRes] = await Promise.all([
@@ -228,20 +238,21 @@
               <div class="course-cover ${c.is_free ? 'free' : 'premium'}">
                 <div class="cover-top">
                   <span class="badge-tag">${c.badge || (c.is_free ? 'FREE' : 'PREMIUM')}</span>
-                  <span style="font-size:12px;opacity:0.8;">${c.category}</span>
+                  <span style="font-size:12px;opacity:0.85;">${c.category}</span>
                 </div>
                 <div class="cover-icon">${c.title.slice(0, 2).toUpperCase()}</div>
               </div>
               <div class="card-body">
                 <div class="card-meta">
-                  <span>${c.level}</span>
-                  <span>${c.lessons_count || 12} Lessons</span>
+                  <span class="rating-pill">★ ${c.rating || '5.0'} <small style="color:var(--text-muted);font-weight:normal;">(${c.reviews_count || 32})</small></span>
+                  <span>${c.lessons_count || 8} Lessons · ${c.duration_hours || 12}h</span>
                 </div>
                 <h3><a href="courses/view.html?slug=${c.slug}">${c.title}</a></h3>
                 <p class="card-desc">${c.description}</p>
                 <div class="card-footer">
                   <div class="price-tag ${c.is_free ? 'free' : ''}">
                     ${c.is_free ? 'FREE' : '৳ ' + c.price.toLocaleString()}
+                    ${!c.is_free && c.price_usd ? `<small>($${c.price_usd})</small>` : ''}
                   </div>
                   <button class="btn btn-primary btn-sm" onclick="window.openCheckoutModal({type:'course', id:'${c.id}', slug:'${c.slug}', title:'${c.title.replace(/'/g, "\\'")}', price:${c.price}, is_free:${c.is_free}})">
                     ${c.is_free ? 'Enroll Free' : 'Enroll Now'}
@@ -259,20 +270,23 @@
               <div class="course-cover" style="background:linear-gradient(135deg,#312e81,#1e1b4b);height:140px;">
                 <div class="cover-top">
                   <span class="badge-tag" style="background:rgba(99,102,241,0.3);">${t.category}</span>
-                  <span style="font-size:12px;opacity:0.8;">${t.sales_count || 50}+ downloads</span>
+                  <span style="font-size:12px;opacity:0.85;">${t.current_version || 'v1.0.0'} · ${t.sales_count || 45}+ downloads</span>
                 </div>
                 <div class="cover-icon" style="font-size:32px;">${t.title.slice(0, 2).toUpperCase()}</div>
               </div>
               <div class="card-body">
+                <div class="card-meta">
+                  <span class="rating-pill">★ ${t.rating || '5.0'} <small style="color:var(--text-muted);font-weight:normal;">(${t.reviews_count || 12})</small></span>
+                  <span style="color:var(--text-muted);font-size:11px;">Production Ready</span>
+                </div>
                 <h3>${t.title}</h3>
                 <p class="card-desc">${t.description}</p>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:12px;"><b>Tags:</b> ${t.tags}</div>
                 <div class="card-footer">
                   <div class="price-tag ${t.is_free ? 'free' : ''}">
                     ${t.is_free ? 'FREE' : '৳ ' + t.price.toLocaleString()}
                   </div>
                   <div style="display:flex;gap:6px;">
-                    ${t.live_preview_url && t.live_preview_url !== '#' ? `<a class="btn btn-secondary btn-sm" href="${t.live_preview_url}" target="_blank">Preview</a>` : ''}
+                    ${t.live_preview_url && t.live_preview_url !== '#' ? `<a class="btn btn-secondary btn-sm" href="${t.live_preview_url}" target="_blank">Demo</a>` : ''}
                     <button class="btn btn-primary btn-sm" onclick="window.openCheckoutModal({type:'template', id:'${t.id}', slug:'${t.slug}', title:'${t.title.replace(/'/g, "\\'")}', price:${t.price}, is_free:${t.is_free}})">
                       ${t.is_free ? 'Download' : 'Get Template'}
                     </button>

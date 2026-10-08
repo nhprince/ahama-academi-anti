@@ -1,5 +1,6 @@
 /* ==========================================================
-   AHAMA ACADEMY - DASHBOARD & CLASSROOM STYLES
+   AHAMA ACADEMY - DASHBOARD & CLASSROOM STYLES (V2)
+   Bespoke, distraction-free LMS & Command Center Architecture
    ========================================================== */
 
 .dash-shell {
@@ -17,6 +18,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  z-index: 10;
 }
 
 .side-brand {
@@ -29,6 +31,7 @@
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  overflow-y: auto;
 }
 
 .side-label {
@@ -36,7 +39,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 800;
-  color: var(--muted);
+  color: var(--text-muted);
   margin: 18px 8px 6px;
 }
 
@@ -45,8 +48,8 @@
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
-  border-radius: var(--radius-md);
-  color: var(--muted);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
   font-weight: 600;
   font-size: 14px;
   transition: var(--transition);
@@ -69,8 +72,8 @@
   gap: 12px;
 }
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), #fb7185);
   color: #fff;
@@ -78,6 +81,7 @@
   place-items: center;
   font-weight: 800;
   font-size: 13px;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
 }
 
 .dash-main {
@@ -91,13 +95,15 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 32px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 .dash-top h1 {
   font-size: 32px;
   margin: 0;
 }
 
-/* Metric KPI Cards */
+/* KPI Cards */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -107,14 +113,19 @@
 .kpi-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 22px;
   box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 .kpi-card span {
   display: block;
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text-muted);
   font-weight: 500;
   margin-bottom: 6px;
 }
@@ -132,11 +143,11 @@
   margin-top: 4px;
 }
 
-/* Panel Containers */
+/* Panels */
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 26px;
   margin-bottom: 28px;
   box-shadow: var(--shadow-sm);
@@ -167,7 +178,7 @@ th {
   text-align: left;
   padding: 12px 14px;
   border-bottom: 1px solid var(--border);
-  color: var(--muted);
+  color: var(--text-muted);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -207,7 +218,6 @@ tr:last-child td {
   color: var(--danger);
 }
 
-/* Action Buttons inside Table */
 .action-btns {
   display: flex;
   align-items: center;
@@ -215,18 +225,19 @@ tr:last-child td {
 }
 
 /* ==========================================================
-   UDEMY-LIKE CLASSROOM EXPERIENCE
+   UDEMY-LEVEL CLASSROOM ENVIRONMENT
    ========================================================== */
 .classroom-layout {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  min-height: calc(100vh - 72px);
+  grid-template-columns: 1fr 390px;
+  min-height: calc(100vh - 60px);
   background: var(--bg);
 }
 .classroom-main {
   padding: 24px 32px;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 .classroom-player-wrap {
   width: 100%;
@@ -236,6 +247,7 @@ tr:last-child td {
   position: relative;
   aspect-ratio: 16 / 9;
   box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .classroom-player-wrap iframe, .classroom-player-wrap video {
   width: 100%;
@@ -250,15 +262,12 @@ tr:last-child td {
   padding: 16px 0;
   border-bottom: 1px solid var(--border);
   margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 .lecture-info h2 {
   font-size: 22px;
   margin: 0 0 4px;
-}
-.lecture-info p {
-  color: var(--muted);
-  font-size: 14px;
-  margin: 0;
 }
 
 .classroom-tabs {
@@ -273,15 +282,16 @@ tr:last-child td {
   border: 0;
   border-bottom: 2px solid transparent;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--text-muted);
   cursor: pointer;
+  transition: var(--transition);
 }
 .classroom-tab.active {
   color: var(--primary);
   border-bottom-color: var(--primary);
 }
 
-/* Classroom Sidebar Curriculum */
+/* Classroom Sidebar */
 .classroom-sidebar {
   border-left: 1px solid var(--border);
   background: var(--surface);
@@ -294,7 +304,7 @@ tr:last-child td {
   border-bottom: 1px solid var(--border);
 }
 .classroom-sidebar-head h3 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-size: 16px;
 }
 
@@ -311,7 +321,7 @@ tr:last-child td {
   justify-content: space-between;
 }
 .lesson-item {
-  padding: 12px 18px;
+  padding: 13px 18px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -328,18 +338,15 @@ tr:last-child td {
   color: var(--primary);
   font-weight: 600;
 }
-.lesson-item.locked {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 .check-icon {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid var(--muted);
+  border: 2px solid var(--text-muted);
   display: grid;
   place-items: center;
   font-size: 10px;
+  flex-shrink: 0;
 }
 .lesson-item.completed .check-icon {
   background: var(--success);
@@ -347,13 +354,74 @@ tr:last-child td {
   color: #fff;
 }
 
-/* Canvas Certificate Box */
+/* Quiz UI Components */
+.quiz-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.quiz-option:hover {
+  background: var(--soft);
+}
+.quiz-option.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Notes List */
+.note-item {
+  background: var(--soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--primary);
+}
+.note-time {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Discussion Card */
+.discussion-card {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.discussion-card:last-child {
+  border-bottom: 0;
+}
+.reply-box {
+  background: var(--soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-size: 13px;
+  border-left: 3px solid var(--accent);
+}
+
+/* Certificate Box */
 .certificate-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  padding: 20px;
+  padding: 24px;
   background: var(--soft);
   border-radius: var(--radius-lg);
   border: 1px dashed var(--border);

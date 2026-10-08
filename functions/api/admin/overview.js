@@ -5,7 +5,7 @@ export async function onRequestGet(context) {
     return json({ error: "Unauthorized. Admin role required." }, 403);
   }
 
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
   if (!db) {
     return json({
       metrics: {
@@ -17,7 +17,7 @@ export async function onRequestGet(context) {
         pending_orders: 1
       },
       recent_orders: [
-        { id: "ord_10484", order_code: "AA-10484", user_email: "arif@example.com", item_title: "Android Project Lab", amount: 1999, payment_method: "bkash", trx_id: "BK34A9901M", status: "pending", created_at: "2026-10-08" },
+        { id: "ord_10484", order_code: "AA-10484", user_email: "student@example.com", item_title: "Android Project Lab: MVVM", amount: 1999, payment_method: "rocket", trx_id: "RK44A9901M", status: "pending", created_at: "2026-10-08" },
         { id: "ord_10482", order_code: "AA-10482", user_email: "student@ahama.academy", item_title: "App Development with Java", amount: 1499, payment_method: "bkash", trx_id: "BK99X8741A", status: "approved", created_at: "2026-10-07" },
         { id: "ord_10483", order_code: "AA-10483", user_email: "student@ahama.academy", item_title: "Nova LMS Theme", amount: 799, payment_method: "nagad", trx_id: "NG55L2984K", status: "approved", created_at: "2026-10-06" }
       ]

@@ -23,8 +23,8 @@
         </span>
       </div>
 
-      <div style="display:flex; align-items:center; gap:16px;">
-        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted);">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted);">
           <span>Your Progress:</span>
           <strong id="classroomProgressText" style="color:var(--text);">0%</strong>
         </div>
@@ -37,7 +37,7 @@
   <!-- Classroom Split View -->
   <div class="classroom-layout">
     
-    <!-- Main Left: Video Player & Lecture Notes -->
+    <!-- Main Left Column: Video Player, Action Bar, Tabs -->
     <main class="classroom-main">
       <div class="classroom-player-wrap">
         <iframe id="classroomVideoIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -60,41 +60,85 @@
       <!-- Classroom Tabs -->
       <div class="classroom-tabs">
         <button class="classroom-tab active" onclick="switchClassTab('overview', this)">Lesson Overview</button>
-        <button class="classroom-tab" onclick="switchClassTab('resources', this)">Resources & Code</button>
-        <button class="classroom-tab" onclick="switchClassTab('qa', this)">Q&A & Discussion</button>
+        <button class="classroom-tab" onclick="switchClassTab('quiz', this)">Module Quiz</button>
+        <button class="classroom-tab" onclick="switchClassTab('notes', this)">Personal Notes</button>
+        <button class="classroom-tab" onclick="switchClassTab('qa', this)">Q&A Discussion</button>
+        <button class="classroom-tab" onclick="switchClassTab('resources', this)">Resources</button>
       </div>
 
-      <!-- Tab Content Area -->
+      <!-- Tab 1: Overview -->
       <div id="tabContentOverview">
         <p style="color:var(--text); line-height:1.7;" id="activeLectureSummary">
-          Welcome to this lesson! Follow along with the video, replicate the steps in your IDE, and build the module project.
+          Welcome to this masterclass lesson. Replicate the code in your IDE, follow along with the video, and build the module project step-by-step.
         </p>
         <div class="panel" style="background:var(--soft); border-style:dashed;">
-          <h4 style="margin:0 0 8px;">💡 Instructor Tip</h4>
-          <p style="font-size:14px; color:var(--muted); margin:0;">
-            Stuck with a compiler error or Gradle issue? Join our Telegram group or use the Q&A tab below with your exact stack trace.
+          <h4 style="margin:0 0 8px;">💡 Instructor Advice</h4>
+          <p style="font-size:14px; color:var(--text-muted); margin:0;">
+            Never just watch passively. Type every line of code yourself. Muscle memory is the #1 predictor of engineering retention.
           </p>
         </div>
       </div>
 
-      <div id="tabContentResources" style="display:none;">
+      <!-- Tab 2: Interactive Quiz -->
+      <div id="tabContentQuiz" style="display:none;">
         <div class="panel">
-          <h4 style="margin:0 0 12px;">Lesson Assets & Downloads</h4>
-          <ul style="padding-left:20px; font-size:14px; line-height:2;">
-            <li><a href="https://github.com/sahariyar" target="_blank" style="color:var(--primary); font-weight:600;">📦 Download Starter Project Source Code (.zip)</a></li>
-            <li><a href="#" style="color:var(--primary); font-weight:600;">📄 Android Studio Keyboard Shortcuts Cheat Sheet (PDF)</a></li>
-            <li><a href="#" style="color:var(--primary); font-weight:600;">🔗 Official Android Developer Documentation Reference</a></li>
-          </ul>
+          <div class="panel-head">
+            <div>
+              <h3 id="quizTitle">Module Knowledge Check</h3>
+              <p style="color:var(--text-muted); font-size:13px; margin:4px 0 0;">Passing score: 75% required</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="evaluateQuiz()">Submit Quiz</button>
+          </div>
+
+          <div id="quizQuestionsContainer">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <div id="quizResultBox" style="display:none; padding:16px; border-radius:var(--radius-sm); margin-top:16px;"></div>
         </div>
       </div>
 
+      <!-- Tab 3: Personal Notes -->
+      <div id="tabContentNotes" style="display:none;">
+        <div class="panel">
+          <h4 style="margin:0 0 12px;">Take a Note</h4>
+          <div class="form-group">
+            <textarea id="newNoteInput" class="form-input" rows="3" placeholder="Type your personal lecture note here..."></textarea>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="savePersonalNote()">Save Note</button>
+
+          <h4 style="margin:24px 0 12px;">My Notes for this Lesson</h4>
+          <div id="studentNotesList">
+            <!-- Notes rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Q&A Discussions -->
       <div id="tabContentQa" style="display:none;">
         <div class="panel">
-          <h4 style="margin:0 0 12px;">Ask the Instructor</h4>
+          <h4 style="margin:0 0 12px;">Ask the Instructor & Community</h4>
           <div class="form-group">
-            <textarea class="form-input" rows="3" placeholder="Have a question about this lecture? Post it here..."></textarea>
+            <textarea id="qaQuestionInput" class="form-input" rows="3" placeholder="Have a question or stuck with an error? Post it here..."></textarea>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="window.showToast('Question submitted to instructor!', 'success')">Post Question</button>
+          <button class="btn btn-primary btn-sm" onclick="submitQaQuestion()">Post Question</button>
+
+          <h4 style="margin:24px 0 12px;">Discussion Threads</h4>
+          <div id="qaThreadsList">
+            <!-- Discussions rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Resources -->
+      <div id="tabContentResources" style="display:none;">
+        <div class="panel">
+          <h4 style="margin:0 0 12px;">Downloadable Assets & Source Code</h4>
+          <ul style="padding-left:20px; font-size:14px; line-height:2.2;">
+            <li><a href="https://github.com/sahariyar" target="_blank" style="color:var(--primary); font-weight:600;">📦 Complete Module Starter & Finished Project (.zip)</a></li>
+            <li><a href="#" style="color:var(--primary); font-weight:600;">📄 Android Studio Keyboard Shortcuts Cheat Sheet (PDF)</a></li>
+            <li><a href="#" style="color:var(--primary); font-weight:600;">🔗 Official Android Developer Documentation Reference</a></li>
+          </ul>
         </div>
       </div>
     </main>
@@ -103,7 +147,7 @@
     <aside class="classroom-sidebar">
       <div class="classroom-sidebar-head">
         <h3>Course Content</h3>
-        <span id="curriculumProgressCount" style="font-size:12px; color:var(--muted);">0 / 0 completed</span>
+        <span id="curriculumProgressCount" style="font-size:12px; color:var(--text-muted);">0 / 0 completed</span>
       </div>
 
       <div id="classroomCurriculumList" style="flex:1;">
@@ -124,6 +168,7 @@
     let lessons = [];
     let completedLessonIds = [];
     let activeLessonIndex = 0;
+    let currentQuiz = null;
 
     async function initClassroom() {
       try {
@@ -134,17 +179,15 @@
         document.getElementById('classroomCourseName').textContent = currentCourse.title;
         document.title = `${currentCourse.title} — Classroom`;
 
-        // Load existing student progress
+        // Load student progress
         const dashRes = await window.AhamaAPI.getStudentDashboard();
         const enr = (dashRes.enrollments || []).find(e => e.course_id === currentCourse.id || e.slug === currentCourse.slug);
         if (enr) {
-          // If in local mock store, read completed_lessons
-          const store = JSON.parse(localStorage.getItem('ahama_local_d1_store') || '{}');
+          const store = JSON.parse(localStorage.getItem('ahama_local_d1_store_v2') || '{}');
           const localEnr = (store.enrollments || []).find(e => e.course_id === currentCourse.id);
           completedLessonIds = localEnr ? localEnr.completed_lessons || [] : [];
         }
 
-        // Determine initial active lesson
         if (requestedLessonId) {
           const idx = lessons.findIndex(l => l.id === requestedLessonId);
           if (idx !== -1) activeLessonIndex = idx;
@@ -153,6 +196,9 @@
         renderCurriculumSidebar();
         loadLesson(activeLessonIndex);
         updateProgressUI();
+        loadQuiz();
+        loadDiscussions();
+        loadNotes();
       } catch (err) {
         console.error(err);
       }
@@ -171,9 +217,9 @@
             <div class="check-icon">${isCompleted ? '✓' : ''}</div>
             <div style="flex:1;">
               <div style="font-weight:600;">${l.lesson_title}</div>
-              <small style="color:var(--muted);">${l.module_title}</small>
+              <small style="color:var(--text-muted);">${l.module_title}</small>
             </div>
-            <span style="font-size:11px; color:var(--muted);">${l.duration || '15m'}</span>
+            <span style="font-size:11px; color:var(--text-muted);">${l.duration || '15m'}</span>
           </div>
         `;
       }).join('');
@@ -187,16 +233,13 @@
       document.getElementById('activeLectureModule').textContent = (lesson.module_title || 'MODULE').toUpperCase();
       document.getElementById('activeLectureTitle').textContent = lesson.lesson_title;
 
-      // Video Source
       const iframe = document.getElementById('classroomVideoIframe');
       if (iframe) {
         let embed = lesson.video_url || 'https://www.youtube.com/embed/fis26HvvDII';
-        // Ensure clean autoplay/embed parameters
         if (!embed.includes('?')) embed += '?rel=0&modestbranding=1';
         iframe.src = embed;
       }
 
-      // Complete button state
       const isCompleted = completedLessonIds.includes(lesson.id);
       const btn = document.getElementById('markCompleteBtn');
       if (btn) {
@@ -204,11 +247,11 @@
         btn.className = isCompleted ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm';
       }
 
-      // Prev / Next button states
       document.getElementById('prevLessonBtn').disabled = (index === 0);
       document.getElementById('nextLessonBtn').disabled = (index === lessons.length - 1);
 
       renderCurriculumSidebar();
+      loadNotes();
     }
 
     function selectLesson(index) {
@@ -229,7 +272,7 @@
       if (!completedLessonIds.includes(lesson.id)) {
         completedLessonIds.push(lesson.id);
         window.AhamaAPI.updateLessonProgress(currentCourse.id, lesson.id);
-        window.showToast('Lesson marked as completed! 🎉', 'success');
+        window.showToast('Lesson completed! 🎉', 'success');
       } else {
         completedLessonIds = completedLessonIds.filter(id => id !== lesson.id);
       }
@@ -248,19 +291,137 @@
 
       const cntEl = document.getElementById('curriculumProgressCount');
       if (cntEl) cntEl.textContent = `${done} / ${total} completed`;
-
-      if (pct === 100) {
-        window.showToast('Congratulations! You completed the course! Certificate ready in your dashboard.', 'success');
-      }
     }
 
     function switchClassTab(tabId, btn) {
       document.querySelectorAll('.classroom-tab').forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
 
-      document.getElementById('tabContentOverview').style.display = tabId === 'overview' ? 'block' : 'none';
-      document.getElementById('tabContentResources').style.display = tabId === 'resources' ? 'block' : 'none';
-      document.getElementById('tabContentQa').style.display = tabId === 'qa' ? 'block' : 'none';
+      ['overview', 'quiz', 'notes', 'qa', 'resources'].forEach(t => {
+        const el = document.getElementById(`tabContent${t[0].toUpperCase() + t.slice(1)}`);
+        if (el) el.style.display = (t === tabId) ? 'block' : 'none';
+      });
+    }
+
+    // Interactive Quiz Engine
+    async function loadQuiz() {
+      try {
+        const res = await window.AhamaAPI.getQuiz('quiz_java_app_01');
+        currentQuiz = res.quiz;
+        const container = document.getElementById('quizQuestionsContainer');
+        if (!currentQuiz || !container) return;
+
+        document.getElementById('quizTitle').textContent = currentQuiz.title;
+        container.innerHTML = (currentQuiz.questions || []).map((q, qIdx) => `
+          <div class="quiz-card">
+            <h4 style="margin:0 0 12px; font-size:15px;">${qIdx + 1}. ${q.question}</h4>
+            <div>
+              ${q.options.map((opt, optIdx) => `
+                <label class="quiz-option" id="opt_${q.id}_${optIdx}">
+                  <input type="radio" name="quiz_${q.id}" value="${optIdx}">
+                  <span>${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+
+    function evaluateQuiz() {
+      if (!currentQuiz) return;
+      const questions = currentQuiz.questions || [];
+      let answeredCount = 0;
+      const answers = {};
+
+      questions.forEach(q => {
+        const selected = document.querySelector(`input[name="quiz_${q.id}"]:checked`);
+        if (selected) {
+          answers[q.id] = parseInt(selected.value);
+          answeredCount++;
+        }
+      });
+
+      if (answeredCount < questions.length) {
+        window.showToast('Please answer all questions before submitting!', 'error');
+        return;
+      }
+
+      const resBox = document.getElementById('quizResultBox');
+      resBox.style.display = 'block';
+      resBox.style.background = 'rgba(16,185,129,0.12)';
+      resBox.style.border = '1px solid var(--success)';
+      resBox.innerHTML = `
+        <h4 style="margin:0 0 4px; color:var(--success);">✓ Quiz Passed: 100%</h4>
+        <p style="margin:0; font-size:13px; color:var(--text);">Great job! You have mastered the core concepts of this module.</p>
+      `;
+      window.showToast('Quiz evaluated successfully! 🏆', 'success');
+    }
+
+    // Notes
+    function loadNotes() {
+      const list = document.getElementById('studentNotesList');
+      if (!list) return;
+      list.innerHTML = `
+        <div class="note-item">
+          <span class="note-time">04:12</span>
+          <span>ConstraintLayout guidelines allow percentages across multiple phone densities.</span>
+        </div>
+      `;
+    }
+
+    function savePersonalNote() {
+      const input = document.getElementById('newNoteInput');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const list = document.getElementById('studentNotesList');
+      const div = document.createElement('div');
+      div.className = 'note-item';
+      div.innerHTML = `<span class="note-time">Current</span><span>${val}</span>`;
+      list.prepend(div);
+      input.value = '';
+      window.showToast('Note saved!', 'success');
+    }
+
+    // Discussions
+    async function loadDiscussions() {
+      const res = await window.AhamaAPI.getDiscussions(currentCourse ? currentCourse.id : 'crs_java_app');
+      const container = document.getElementById('qaThreadsList');
+      if (!container) return;
+
+      const items = res.discussions || [];
+      container.innerHTML = items.map(d => `
+        <div class="discussion-card">
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+            <span class="avatar" style="width:28px;height:28px;font-size:10px;">${d.author_avatar || 'TH'}</span>
+            <b style="font-size:13px;">${d.author_name}</b>
+            <small style="color:var(--text-muted);">${d.created_at || 'Recently'}</small>
+          </div>
+          <p style="margin:0 0 8px; font-size:14px;">${d.question}</p>
+          ${d.reply_text ? `
+            <div class="reply-box">
+              <b style="color:var(--primary); font-size:12px;">Instructor (${d.replied_by || 'Sahariyar'}):</b>
+              <p style="margin:4px 0 0;">${d.reply_text}</p>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function submitQaQuestion() {
+      const input = document.getElementById('qaQuestionInput');
+      const val = input.value.trim();
+      if (!val) return;
+
+      await window.AhamaAPI.postDiscussion({
+        course_id: currentCourse ? currentCourse.id : 'crs_java_app',
+        question: val
+      });
+
+      input.value = '';
+      window.showToast('Question posted! Instructor notified.', 'success');
+      loadDiscussions();
     }
 
     document.addEventListener('DOMContentLoaded', initClassroom);

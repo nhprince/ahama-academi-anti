@@ -1,3 +1,5 @@
+import { sendEmail } from "../_email.js";
+
 export async function onRequestGet(context) {
   const { env, json, getUser } = context;
   const user = await getUser();
@@ -5,7 +7,7 @@ export async function onRequestGet(context) {
     return json({ error: "Unauthorized" }, 403);
   }
 
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
   if (!db) {
     return json({ orders: [] });
   }
@@ -21,12 +23,12 @@ export async function onRequestPost(context) {
     return json({ error: "Unauthorized" }, 403);
   }
 
-  const { order_id, action } = await request.json(); // action = 'approve' | 'reject'
+  const { order_id, action, notes } = await request.json(); // action = 'approve' | 'reject'
   if (!order_id || !action) {
     return json({ error: "Missing order_id or action" }, 400);
   }
 
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
   if (!db) {
     return json({ success: true, message: `Order ${order_id} ${action}d (Mock mode)` });
   }
@@ -37,7 +39,7 @@ export async function onRequestPost(context) {
   }
 
   const newStatus = action === "approve" ? "approved" : "rejected";
-  await db.prepare("UPDATE orders SET status = ? WHERE id = ?").bind(newStatus, order_id).run();
+  await db.prepare("UPDATE orders SET status = ?, notes = ? WHERE id = ?").bind(newStatus, notes || "", order_id).run();
 
   // If approved, instantly grant access!
   if (action === "approve") {
@@ -55,10 +57,21 @@ export async function onRequestPost(context) {
         VALUES (?, ?, ?, ?)
       `).bind(licId, order.user_id, order.item_id, licenseKey).run();
     }
+
+    // Send approval email to student
+    sendEmail({
+      env,
+      to: order.user_email,
+      subject: `Order #${order.order_code} Approved! Access Granted 🎉`,
+      html: `<h3>Great news!</h3>
+             <p>Your payment for <b>${order.item_title}</b> has been verified and approved.</p>
+             <p>You can now access your course in the classroom or download your template from your student dashboard.</p>
+             <p><a href="https://ahama-academy.pages.dev/student/">Go to My Dashboard</a></p>`
+    }).catch(() => {});
   }
 
   return json({
     success: true,
-    message: `Order #${order.order_code} has been successfully ${newStatus}! Access has been updated.`
+    message: `Order #${order.order_code} has been successfully ${newStatus}! Student access granted.`
   });
 }

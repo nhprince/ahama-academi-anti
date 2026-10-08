@@ -12,14 +12,24 @@ A production-ready, full-fledged course platform and digital store built for **1
   - Sell and distribute website themes (HTML5, Vanilla JS, React) and Android app UI kits (XML + Java).
   - Live demo previews and secure ZIP downloads with license key generation.
 - **Payment & Order CRM:**
-  - Automated & Semi-Automated bKash & Nagad Transaction ID (TrxID) verification.
+  - Automated & Semi-Automated bKash, Nagad, and Rocket Transaction ID (TrxID) verification with 1-click clipboard copy.
   - 1-Click admin approval that instantly activates student course enrollments and template licenses.
+  - Automated transactional email receipts via Resend (`RESEND_API_KEY`).
   - Dynamic coupon engine (`WELCOME20`, `BANGLA50`, `FREEPASS`).
-- **Advanced Admin Control Center:**
+- **Learning Experience:**
+  - In-lecture interactive Quizzes with instant grading and pass/fail thresholds.
+  - Interactive Q&A discussion board per course.
+  - Timestamped lecture notes synced to student account.
+  - Verified HTML5 Canvas certificate generation.
+- **Digital Store & Versioning:**
+  - Version releases (`v1.2.0`), interactive changelog modal, live previews, and license keys (`AA-LIC-...`).
+- **Bilingual Interface (i18n):**
+  - Instant English / Bengali (`বাংলা`) toggle with 0 external dependencies.
+- **Advanced Admin Control Center & CMS:**
   - Live KPI metrics (Total Revenue in ৳ BDT, Students, Orders, Courses).
   - Visual sales bar charts and order feeds.
   - Course and template creation modals.
-  - **Live CMS Customizer:** Edit announcement bar, hero headline, bKash/Nagad recipient numbers, and support email from the browser!
+  - **Live CMS Customizer:** Edit announcement bar, hero headline, brand theme colors (`--primary`, `--accent`), bKash / Nagad / Rocket recipient numbers, and support email from the browser!
 - **Zero-Card Hybrid Storage Router:**
   - **YouTube Unlisted Embeds:** Unlimited free video streaming bandwidth with zero buffering.
   - **GitHub Releases CDN:** Unlimited 2GB downloads for large template ZIP archives.
@@ -36,7 +46,7 @@ A production-ready, full-fledged course platform and digital store built for **1
    git init
    git add .
    git commit -m "Ahama Academy Release"
-   git remote add origin https://github.com/your-username/ahama-academy.git
+   git remote add origin https://github.com/nhprince/ahama-academi-anti.git
    git push -u origin main
    ```
 
@@ -50,20 +60,18 @@ A production-ready, full-fledged course platform and digital store built for **1
 
 3. **Initialize Free Cloudflare D1 Database:**
    ```bash
-   # Create database
-   npx wrangler d1 create ahama-db
-
    # Run schema migration
-   npx wrangler d1 execute ahama-db --file=./d1/schema.sql
+   npx wrangler d1 execute ahama_db_anti --file=./d1/schema.sql
 
    # Seed initial courses, templates, and admin user
-   npx wrangler d1 execute ahama-db --file=./d1/seed.sql
+   npx wrangler d1 execute ahama_db_anti --file=./d1/seed.sql
    ```
 
 4. **Bind D1 in Cloudflare Pages:**
    - In Pages project settings: **Settings** → **Functions** → **D1 database bindings**
-   - Variable name: `DB`
-   - Database: `ahama-db`
+   - Variable name: `ahama_db_anti` (or `DB`)
+   - Database: select your created D1 database.
+   - *(Optional)* In **Environment variables**, set `RESEND_API_KEY` for real email receipts.
 
 ---
 

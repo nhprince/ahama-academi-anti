@@ -33,10 +33,10 @@
       </nav>
 
       <div class="side-user">
-        <span class="avatar" id="dashUserAvatar">SA</span>
+        <span class="avatar" id="dashUserAvatar">TH</span>
         <div style="flex:1; overflow:hidden;">
-          <b id="dashUserName" style="display:block; font-size:13px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">Sahariyar Ahamad</b>
-          <small id="dashUserEmail" style="color:var(--muted); font-size:11px;">student@ahama.academy</small>
+          <b id="dashUserName" style="display:block; font-size:13px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">Tanvir Hasan</b>
+          <small id="dashUserEmail" style="color:var(--text-muted); font-size:11px;">student@ahama.academy</small>
         </div>
         <button class="btn btn-secondary btn-sm" onclick="window.AhamaAPI.logout()" title="Logout" style="padding:4px 8px;">✕</button>
       </div>
@@ -47,9 +47,10 @@
       <header class="dash-top">
         <div>
           <span class="eyebrow">STUDENT LEARNING DASHBOARD</span>
-          <h1>Welcome Back, <span id="welcomeName">Student</span>!</h1>
+          <h1>Welcome Back, <span id="welcomeName">Tanvir</span>!</h1>
         </div>
         <div class="header-actions">
+          <button class="lang-btn" id="langToggleBtn" onclick="window.toggleLanguage()">🌐 EN</button>
           <button class="theme-btn" id="themeBtn">💻 System</button>
         </div>
       </header>
@@ -132,7 +133,7 @@
       <section id="viewCertificates" class="panel" style="display:none;">
         <div class="panel-head">
           <h2>Official Completion Certificates</h2>
-          <p style="color:var(--muted); font-size:14px; margin:0;">Download your high-resolution official verified certificate.</p>
+          <p style="color:var(--text-muted); font-size:14px; margin:0;">Download your high-resolution official verified certificate.</p>
         </div>
 
         <div style="display:flex; gap:16px; align-items:center; margin-bottom:20px; flex-wrap:wrap;">
@@ -153,6 +154,7 @@
   </div>
 
   <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/i18n.js"></script>
   <script src="../assets/js/site.js"></script>
   <script>
     let studentData = null;
@@ -183,17 +185,15 @@
       const templates = studentData.templates || [];
       const orders = studentData.orders || [];
 
-      // KPIs
       document.getElementById('kpiCourseCount').textContent = enrollments.length;
       document.getElementById('kpiTemplateCount').textContent = templates.length;
       document.getElementById('kpiCertCount').textContent = enrollments.filter(e => e.progress_percent >= 100 || e.certificate_id).length;
       const totalLessonsDone = enrollments.reduce((acc, e) => acc + (e.completed_count || 0), 0);
       document.getElementById('kpiLessonCount').textContent = totalLessonsDone || 6;
 
-      // Render Courses
       const cGrid = document.getElementById('studentCourseGrid');
       if (enrollments.length === 0) {
-        cGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">You haven't enrolled in any courses yet. <a href="../courses/" style="color:var(--primary);font-weight:bold;">Explore courses</a></div>`;
+        cGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">You haven't enrolled in any courses yet. <a href="../courses/" style="color:var(--primary);font-weight:bold;">Explore courses</a></div>`;
       } else {
         cGrid.innerHTML = enrollments.map(e => `
           <div class="hero-mini-course" style="background:var(--surface); border:1px solid var(--border); margin:0;">
@@ -206,7 +206,7 @@
               <div class="progress-fill" style="width:${e.progress_percent}%;"></div>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
-              <span style="font-size:12px; color:var(--muted);">${e.completed_count || 3} of ${e.total_lessons || 7} lessons</span>
+              <span style="font-size:12px; color:var(--text-muted);">${e.completed_count || 3} of ${e.total_lessons || 7} lessons</span>
               <a class="btn btn-primary btn-sm" href="../classroom/?course=${e.slug}">
                 ${e.progress_percent >= 100 ? 'Review Course →' : 'Continue →'}
               </a>
@@ -215,16 +215,15 @@
         `).join('');
       }
 
-      // Render Templates
       const tList = document.getElementById('studentTemplateList');
       if (templates.length === 0) {
-        tList.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);">No templates purchased yet. <a href="../templates/" style="color:var(--primary);font-weight:bold;">Browse Digital Store</a></div>`;
+        tList.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);">No templates purchased yet. <a href="../templates/" style="color:var(--primary);font-weight:bold;">Browse Digital Store</a></div>`;
       } else {
         tList.innerHTML = templates.map(t => `
-          <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface); flex-wrap:wrap; gap:14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); flex-wrap:wrap; gap:14px;">
             <div>
               <b style="font-size:16px; display:block;">${t.title}</b>
-              <small style="color:var(--muted);">${t.category} · Licensed for Production</small>
+              <small style="color:var(--text-muted);">${t.category} · Licensed for Production · ${t.current_version || 'v1.0.0'}</small>
             </div>
             <div style="display:flex; align-items:center; gap:12px;">
               <span style="font-family:monospace; background:var(--soft); padding:6px 10px; border-radius:6px; font-size:12px; border:1px solid var(--border);">
@@ -238,10 +237,9 @@
         `).join('');
       }
 
-      // Render Orders
       const oTbody = document.getElementById('studentOrdersTbody');
       if (orders.length === 0) {
-        oTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px;">No transaction records found.</td></tr>`;
+        oTbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:30px;">No transaction records found.</td></tr>`;
       } else {
         oTbody.innerHTML = orders.map(o => `
           <tr>
@@ -251,7 +249,7 @@
             <td><span style="text-transform:uppercase; font-size:11px; font-weight:700;">${o.payment_method}</span></td>
             <td><code style="font-size:12px;">${o.trx_id || 'N/A'}</code></td>
             <td><span class="status-badge ${o.status}">${o.status}</span></td>
-            <td><small style="color:var(--muted);">${o.created_at || 'Recent'}</small></td>
+            <td><small style="color:var(--text-muted);">${o.created_at || 'Recent'}</small></td>
           </tr>
         `).join('');
       }
@@ -271,19 +269,16 @@
       }
     }
 
-    // HTML5 Canvas Certificate Generator
     function renderCertificate() {
       const canvas = document.getElementById('certificateCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const courseTitle = document.getElementById('certCourseSelect')?.value || 'App Development with Java';
-      const user = window.AhamaAPI.getUser() || { name: 'Sahariyar Ahamad' };
+      const user = window.AhamaAPI.getUser() || { name: 'Tanvir Hasan' };
 
-      // Background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, 800, 520);
 
-      // Outer Crimson & Gold Border
       ctx.strokeStyle = '#e11d48';
       ctx.lineWidth = 14;
       ctx.strokeRect(16, 16, 768, 488);
@@ -292,7 +287,6 @@
       ctx.lineWidth = 3;
       ctx.strokeRect(26, 26, 748, 468);
 
-      // Top Header
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 26px Outfit, Inter, sans-serif';
       ctx.textAlign = 'center';
@@ -302,33 +296,27 @@
       ctx.font = 'bold 16px Inter, sans-serif';
       ctx.fillText('CERTIFICATE OF ACCOMPLISHMENT', 400, 115);
 
-      // Subtitle
       ctx.fillStyle = '#64748b';
       ctx.font = '14px Inter, sans-serif';
       ctx.fillText('This document certifies that', 400, 165);
 
-      // Student Name
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 30px Outfit, Inter, sans-serif';
       ctx.fillText(user.name.toUpperCase(), 400, 215);
 
-      // Body text
       ctx.fillStyle = '#64748b';
       ctx.font = '14px Inter, sans-serif';
       ctx.fillText('has successfully mastered the curriculum and completed all projects for', 400, 260);
 
-      // Course Name
       ctx.fillStyle = '#e11d48';
       ctx.font = 'bold 22px Outfit, Inter, sans-serif';
       ctx.fillText(courseTitle, 400, 305);
 
-      // Verification Line & Signature
       ctx.fillStyle = '#475569';
       ctx.font = '12px Inter, sans-serif';
       ctx.fillText('Issued: ' + new Date().toLocaleDateString('en-GB'), 220, 420);
       ctx.fillText('Verification ID: AA-CERT-2026-9041', 220, 440);
 
-      // Instructor signature line
       ctx.beginPath();
       ctx.moveTo(520, 420);
       ctx.lineTo(680, 420);

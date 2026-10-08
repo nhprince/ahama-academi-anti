@@ -52,6 +52,7 @@
           <h1>Admin Control Center</h1>
         </div>
         <div class="header-actions">
+          <button class="theme-btn" id="langToggleBtn" onclick="window.toggleLanguage()" title="Switch Language">🌐 EN</button>
           <button class="theme-btn" id="themeBtn">💻 System</button>
         </div>
       </header>
@@ -207,7 +208,7 @@
             <div>
               <h3>CMS Platform Customizer</h3>
               <p style="color:var(--muted); font-size:13px; margin:4px 0 0;">
-                Update headlines, announcement marquee, and payment recipient numbers live on your Cloudflare site!
+                Live brand theme colors, headlines, marquee announcement, and bKash / Nagad / Rocket numbers.
               </p>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveCmsSettings()">Save All Changes</button>
@@ -224,9 +225,30 @@
               <input type="email" id="cmsSupportEmail" class="form-input">
             </div>
 
+            <div class="form-group">
+              <label class="form-label">Brand Primary Color</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="color" id="cmsPrimaryColorPicker" style="width:44px; height:40px; padding:2px; border:1px solid var(--border); border-radius:6px; cursor:pointer;" oninput="document.getElementById('cmsPrimaryColor').value = this.value">
+                <input type="text" id="cmsPrimaryColor" class="form-input" placeholder="#e11d48" oninput="document.getElementById('cmsPrimaryColorPicker').value = this.value">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Brand Accent Color</label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="color" id="cmsAccentColorPicker" style="width:44px; height:40px; padding:2px; border:1px solid var(--border); border-radius:6px; cursor:pointer;" oninput="document.getElementById('cmsAccentColor').value = this.value">
+                <input type="text" id="cmsAccentColor" class="form-input" placeholder="#6366f1" oninput="document.getElementById('cmsAccentColorPicker').value = this.value">
+              </div>
+            </div>
+
             <div class="form-group" style="grid-column:1/-1;">
-              <label class="form-label">Announcement Bar Marquee</label>
-              <input type="text" id="cmsAnnouncementBar" class="form-input">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <label class="form-label" style="margin:0;">Announcement Bar Marquee</label>
+                <label style="font-size:12px; display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="cmsAnnouncementActive"> Show on site
+                </label>
+              </div>
+              <input type="text" id="cmsAnnouncementBar" class="form-input" placeholder="Special promo or update banner">
             </div>
 
             <div class="form-group">
@@ -237,6 +259,11 @@
             <div class="form-group">
               <label class="form-label">Nagad Recipient Details</label>
               <input type="text" id="cmsNagadNumber" class="form-input">
+            </div>
+
+            <div class="form-group" style="grid-column:1/-1;">
+              <label class="form-label">Rocket Recipient Details (DBBL)</label>
+              <input type="text" id="cmsRocketNumber" class="form-input" placeholder="01912-345678-9 (Personal / Send Money)">
             </div>
 
             <div class="form-group" style="grid-column:1/-1;">
@@ -372,6 +399,7 @@
   </div>
 
   <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/i18n.js"></script>
   <script src="../assets/js/site.js"></script>
   <script>
     async function initAdmin() {
@@ -507,24 +535,46 @@
       document.getElementById('cmsSiteName').value = s.site_name || 'Ahama Academy';
       document.getElementById('cmsSupportEmail').value = s.support_email || 'support@ahama.academy';
       document.getElementById('cmsAnnouncementBar').value = s.announcement_bar || '';
+      document.getElementById('cmsAnnouncementActive').checked = s.announcement_active !== '0';
       document.getElementById('cmsBkashNumber').value = s.bkash_number || '';
       document.getElementById('cmsNagadNumber').value = s.nagad_number || '';
+      document.getElementById('cmsRocketNumber').value = s.rocket_number || '';
+      
+      const primary = s.theme_primary_color || '#e11d48';
+      const accent = s.theme_accent_color || '#6366f1';
+      document.getElementById('cmsPrimaryColor').value = primary;
+      document.getElementById('cmsPrimaryColorPicker').value = primary;
+      document.getElementById('cmsAccentColor').value = accent;
+      document.getElementById('cmsAccentColorPicker').value = accent;
+
       document.getElementById('cmsHeroHeadline').value = s.hero_headline || '';
       document.getElementById('cmsHeroSubtext').value = s.hero_subtext || '';
     }
 
     async function saveCmsSettings() {
+      const primary = document.getElementById('cmsPrimaryColor').value || '#e11d48';
+      const accent = document.getElementById('cmsAccentColor').value || '#6366f1';
+
       const payload = {
         site_name: document.getElementById('cmsSiteName').value,
         support_email: document.getElementById('cmsSupportEmail').value,
         announcement_bar: document.getElementById('cmsAnnouncementBar').value,
+        announcement_active: document.getElementById('cmsAnnouncementActive').checked ? '1' : '0',
         bkash_number: document.getElementById('cmsBkashNumber').value,
         nagad_number: document.getElementById('cmsNagadNumber').value,
+        rocket_number: document.getElementById('cmsRocketNumber').value,
+        theme_primary_color: primary,
+        theme_accent_color: accent,
         hero_headline: document.getElementById('cmsHeroHeadline').value,
         hero_subtext: document.getElementById('cmsHeroSubtext').value
       };
 
       await window.AhamaAPI.saveCmsSettings(payload);
+      
+      // Live apply on this document
+      document.documentElement.style.setProperty('--primary', primary);
+      document.documentElement.style.setProperty('--accent', accent);
+      
       window.showToast('CMS Platform settings updated live! 🎉', 'success');
     }
 

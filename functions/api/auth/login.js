@@ -9,16 +9,16 @@ export async function onRequestPost(context) {
     }
 
     const cleanEmail = email.toLowerCase().trim();
-    const db = env.DB;
+    const db = env.ahama_db_anti || env.DB;
 
     // Check demo accounts directly if db not attached
     if (!db) {
       if (cleanEmail === "admin@ahama.academy" && password === "admin123") {
-        const token = await createJwt({ id: "usr_admin", name: "Ahama Administrator", email: cleanEmail, role: "admin", avatar: "AA" });
-        return json({ success: true, token, user: { id: "usr_admin", name: "Ahama Administrator", email: cleanEmail, role: "admin", avatar: "AA" } });
+        const token = await createJwt({ id: "usr_admin", name: "Sahariyar Ahamad", email: cleanEmail, role: "admin", avatar: "SA" });
+        return json({ success: true, token, user: { id: "usr_admin", name: "Sahariyar Ahamad", email: cleanEmail, role: "admin", avatar: "SA" } });
       }
-      const token = await createJwt({ id: "usr_student", name: "Sahariyar Ahamad", email: cleanEmail, role: "student", avatar: "SA" });
-      return json({ success: true, token, user: { id: "usr_student", name: "Sahariyar Ahamad", email: cleanEmail, role: "student", avatar: "SA" } });
+      const token = await createJwt({ id: "usr_student", name: "Tanvir Hasan", email: cleanEmail, role: "student", avatar: "TH" });
+      return json({ success: true, token, user: { id: "usr_student", name: "Tanvir Hasan", email: cleanEmail, role: "student", avatar: "TH" } });
     }
 
     const user = await db.prepare("SELECT * FROM users WHERE email = ?").bind(cleanEmail).first();

@@ -1,3 +1,5 @@
+import { sendEmail } from "../_email.js";
+
 export async function onRequestPost(context) {
   const { request, env, json, getUser } = context;
   try {
@@ -9,7 +11,7 @@ export async function onRequestPost(context) {
     const {
       item_type, // 'course' | 'template'
       item_id,
-      payment_method, // 'bkash' | 'nagad' | 'card' | 'free'
+      payment_method, // 'bkash' | 'nagad' | 'rocket' | 'card' | 'free'
       trx_id,
       sender_phone,
       coupon_code
@@ -19,9 +21,8 @@ export async function onRequestPost(context) {
       return json({ error: "Missing required order fields" }, 400);
     }
 
-    const db = env.DB;
+    const db = env.ahama_db_anti || env.DB;
     if (!db) {
-      // Mock instant checkout
       const mockOrderCode = "AA-" + Math.floor(10000 + Math.random() * 90000);
       return json({
         success: true,
@@ -35,7 +36,7 @@ export async function onRequestPost(context) {
           payment_method,
           trx_id: trx_id || "TRX-DEMO"
         },
-        message: payment_method === "free" ? "Enrollment activated!" : "Order placed! Awaiting TrxID verification."
+        message: payment_method === "free" ? "Access activated instantly!" : "Order placed! Awaiting TrxID verification."
       });
     }
 
@@ -73,8 +74,6 @@ export async function onRequestPost(context) {
 
     const orderId = "ord_" + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
     const orderCode = "AA-" + Math.floor(10000 + Math.random() * 90000);
-    
-    // Auto-approve if final amount is 0 or payment is 'free'
     const isAutoApproved = finalAmount === 0 || payment_method === "free";
     const status = isAutoApproved ? "approved" : "pending";
 
@@ -114,6 +113,19 @@ export async function onRequestPost(context) {
       }
     }
 
+    // Email notification
+    sendEmail({
+      env,
+      to: user.email,
+      subject: `Order #${orderCode} Received — Ahama Academy`,
+      html: `<h3>Thank you for your order, ${user.name}!</h3>
+             <p><b>Item:</b> ${itemTitle}</p>
+             <p><b>Amount:</b> ৳ ${finalAmount}</p>
+             <p><b>Payment Method:</b> ${payment_method.toUpperCase()}</p>
+             <p><b>Status:</b> ${status.toUpperCase()}</p>
+             <p>${isAutoApproved ? "Your access has been activated immediately." : "Your bKash/Nagad TrxID is being verified. You will receive an update shortly."}</p>`
+    }).catch(() => {});
+
     return json({
       success: true,
       order: {
@@ -125,7 +137,7 @@ export async function onRequestPost(context) {
       },
       message: isAutoApproved 
         ? "Access granted immediately! Check your dashboard." 
-        : "Order submitted! Your bKash/Nagad TrxID is being verified by admin."
+        : "Order submitted! Your payment TrxID is being verified by admin."
     });
   } catch (err) {
     return json({ error: err.message }, 500);

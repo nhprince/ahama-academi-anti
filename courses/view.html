@@ -17,14 +17,15 @@
       </a>
 
       <nav class="desktop-nav">
-        <a href="../">Home</a>
-        <a class="active" href="./">Courses</a>
-        <a href="../templates/">Templates & Themes</a>
-        <a href="../docs/">Docs</a>
-        <a href="../about/">About</a>
+        <a href="../" data-i18n="nav_home">Home</a>
+        <a class="active" href="./" data-i18n="nav_courses">Courses</a>
+        <a href="../templates/" data-i18n="nav_templates">Templates & Themes</a>
+        <a href="../docs/" data-i18n="nav_docs">Docs</a>
+        <a href="../about/" data-i18n="nav_about">About</a>
       </nav>
 
       <div class="header-actions">
+        <button class="lang-btn" id="langToggleBtn" onclick="window.toggleLanguage()">🌐 EN</button>
         <button class="theme-btn" id="themeBtn">💻 System</button>
         <div id="headerAuth"></div>
         <button class="menu-btn" id="menuBtn">☰</button>
@@ -33,24 +34,25 @@
   </header>
 
   <main class="container" style="padding-top:40px; padding-bottom:90px;">
-    <div style="display:grid; grid-template-columns: 1fr 380px; gap:40px; align-items:start;" class="course-detail-layout">
+    <div style="display:grid; grid-template-columns: 1fr 390px; gap:40px; align-items:start;" class="course-detail-layout">
       
-      <!-- Left Column: Course Info & Curriculum -->
+      <!-- Left Column: Course Info, Syllabus & Reviews -->
       <div>
         <div style="margin-bottom:28px;">
           <span class="eyebrow" id="viewCourseCategory">COURSE</span>
-          <h1 id="viewCourseTitle" style="font-size:clamp(32px, 4vw, 50px); line-height:1.1; margin:0 0 16px;">Loading course...</h1>
-          <p id="viewCourseDesc" style="color:var(--muted); font-size:17px; line-height:1.6; margin:0 0 20px;"></p>
+          <h1 id="viewCourseTitle" style="font-size:clamp(32px, 4vw, 48px); line-height:1.1; margin:0 0 12px;">Loading course...</h1>
+          <p id="viewCourseSubtitle" style="font-size:18px; color:var(--text); font-weight:500; margin:0 0 14px;"></p>
+          <p id="viewCourseDesc" style="color:var(--text-muted); font-size:16px; line-height:1.6; margin:0 0 20px;"></p>
           
-          <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--muted);">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--text-muted);">
             <span style="background:var(--soft); padding:6px 12px; border-radius:6px; border:1px solid var(--border);">
-              👨‍🏫 Instructor: <b id="viewCourseInstructor" style="color:var(--text);">Ahama Academy</b>
+              👨‍🏫 Instructor: <b id="viewCourseInstructor" style="color:var(--text);">Sahariyar Ahamad</b>
             </span>
             <span style="background:var(--soft); padding:6px 12px; border-radius:6px; border:1px solid var(--border);">
               🎯 Level: <b id="viewCourseLevel" style="color:var(--text);">Beginner</b>
             </span>
             <span style="background:var(--soft); padding:6px 12px; border-radius:6px; border:1px solid var(--border);">
-              🌐 Language: <b style="color:var(--text);">Bangla & English</b>
+              ⭐ Rating: <b id="viewCourseRating" style="color:#f59e0b;">5.0</b> (<span id="viewCourseReviewsCount">32</span> reviews)
             </span>
           </div>
         </div>
@@ -58,22 +60,46 @@
         <!-- What You Will Learn -->
         <div class="panel">
           <h3 style="margin-bottom:16px;">What you'll learn in this masterclass</h3>
-          <ul style="padding-left:20px; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:14px; color:var(--text);" id="viewCourseOutcomes">
-            <li>Build complete, native applications from scratch</li>
-            <li>Master industry-standard architecture patterns</li>
-            <li>Understand UI design, responsive constraints & APIs</li>
-            <li>Deploy real code and build your engineering portfolio</li>
+          <ul style="padding-left:20px; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:14px; color:var(--text);" id="viewCourseOutcomes">
+            <li>Build and deploy 5 real-world native Android apps</li>
+            <li>Master Java OOP principles in mobile development</li>
+            <li>Design modern responsive layouts using XML ConstraintLayout</li>
+            <li>Store offline data with Room Database & SQLite</li>
+            <li>Integrate REST APIs using Retrofit and Volley</li>
           </ul>
+        </div>
+
+        <!-- Instructor Profile -->
+        <div class="panel" style="display:flex; gap:18px; align-items:center;">
+          <span class="avatar" style="width:60px; height:60px; font-size:20px;" id="instructorAvatar">SA</span>
+          <div>
+            <h4 style="margin:0 0 4px; font-size:18px;" id="instructorName">Sahariyar Ahamad</h4>
+            <p style="margin:0 0 6px; font-size:13px; color:var(--primary); font-weight:600;" id="instructorTitle">Lead Android Architect</p>
+            <p style="margin:0; font-size:13px; color:var(--text-muted);" id="instructorBio">
+              Senior software engineer specializing in clean Android architecture (MVVM, Room, Kotlin, Java) and serverless Cloudflare Workers architectures.
+            </p>
+          </div>
         </div>
 
         <!-- Curriculum Breakdown -->
         <div class="panel">
           <div class="panel-head">
             <h3>Course Curriculum</h3>
-            <span id="curriculumSummary" style="font-size:13px; color:var(--muted);"></span>
+            <span id="curriculumSummary" style="font-size:13px; color:var(--text-muted);"></span>
           </div>
           
-          <div id="curriculumList" style="border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden;">
+          <div id="curriculumList" style="border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Student Reviews -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Student Reviews & Feedback</h3>
+            <button class="btn btn-secondary btn-sm" onclick="openReviewModal()">Write a Review</button>
+          </div>
+          <div id="courseReviewsList">
             <!-- Populated via JS -->
           </div>
         </div>
@@ -84,10 +110,10 @@
         <div class="hero-card" style="padding:0; overflow:hidden;">
           <div style="height:210px; background:linear-gradient(135deg, #1e1b4b, #312e81); display:grid; place-items:center; color:#fff; position:relative;">
             <div style="text-align:center;">
-              <div style="width:56px; height:56px; border-radius:50%; background:var(--primary); display:grid; place-items:center; margin:0 auto 10px; font-size:20px; box-shadow:0 4px 15px rgba(225,29,72,0.4);">
+              <div style="width:58px; height:58px; border-radius:50%; background:var(--primary); display:grid; place-items:center; margin:0 auto 10px; font-size:20px; box-shadow:0 4px 15px rgba(225,29,72,0.4);">
                 ▶
               </div>
-              <span style="font-size:12px; font-weight:700; letter-spacing:0.08em;">PREVIEW THIS COURSE</span>
+              <span style="font-size:12px; font-weight:750; letter-spacing:0.08em;">PREVIEW THIS MASTERCLASS</span>
             </div>
           </div>
 
@@ -101,11 +127,11 @@
               <!-- Rendered depending on enrollment status -->
             </div>
 
-            <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); line-height:1.7;">
+            <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border); font-size:13px; color:var(--text-muted); line-height:1.7;">
               <div>✓ Instant access on mobile & desktop</div>
               <div>✓ Official certificate of completion</div>
               <div>✓ Source code & downloadable assets</div>
-              <div>✓ Direct instructor Q&A access</div>
+              <div>✓ bKash, Nagad & Rocket manual TrxID verification</div>
             </div>
           </div>
         </div>
@@ -114,13 +140,35 @@
     </div>
   </main>
 
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button class="modal-close" onclick="closeReviewModal()">✕</button>
+      <h3>Leave a Review</h3>
+      <div class="form-group">
+        <label class="form-label">Rating</label>
+        <select id="reviewRatingInput" class="form-input">
+          <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+          <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+          <option value="3">⭐⭐⭐ (3 Stars)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Feedback</label>
+        <textarea id="reviewTextInput" class="form-input" rows="4" placeholder="What did you like about this course?"></textarea>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="submitCourseReview()">Submit Review</button>
+    </div>
+  </div>
+
   <footer class="site-footer">
-    <div class="container copyright">
+    <div class="container copyright" data-i18n="footer_copyright">
       © 2026 Ahama Academy. All rights reserved.
     </div>
   </footer>
 
   <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/i18n.js"></script>
   <script src="../assets/js/site.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -134,15 +182,25 @@
         currentCourse = res.course;
         isStudentEnrolled = res.isEnrolled;
         const cur = res.curriculum || [];
+        const reviews = res.reviews || [];
 
         document.title = `${currentCourse.title} — Ahama Academy`;
         document.getElementById('viewCourseCategory').textContent = (currentCourse.category || 'COURSE').toUpperCase();
         document.getElementById('viewCourseTitle').textContent = currentCourse.title;
+        document.getElementById('viewCourseSubtitle').textContent = currentCourse.subtitle || '';
         document.getElementById('viewCourseDesc').textContent = currentCourse.description;
-        document.getElementById('viewCourseInstructor').textContent = currentCourse.instructor || 'Ahama Academy';
+        document.getElementById('viewCourseInstructor').textContent = currentCourse.instructor_name || 'Sahariyar Ahamad';
         document.getElementById('viewCourseLevel').textContent = currentCourse.level || 'Beginner';
+        document.getElementById('viewCourseRating').textContent = currentCourse.rating || '5.0';
+        document.getElementById('viewCourseReviewsCount').textContent = currentCourse.reviews_count || reviews.length || '32';
         document.getElementById('viewCardPrice').innerHTML = currentCourse.is_free ? '<span style="color:var(--success);">FREE</span>' : `৳ ${currentCourse.price.toLocaleString()}`;
         document.getElementById('viewCardBadge').textContent = currentCourse.badge || (currentCourse.is_free ? 'FREE' : 'PREMIUM');
+
+        // Instructor
+        document.getElementById('instructorName').textContent = currentCourse.instructor_name || 'Sahariyar Ahamad';
+        if (currentCourse.instructor_title) document.getElementById('instructorTitle').textContent = currentCourse.instructor_title;
+        if (currentCourse.instructor_bio) document.getElementById('instructorBio').textContent = currentCourse.instructor_bio;
+        document.getElementById('instructorAvatar').textContent = (currentCourse.instructor_name || 'SA').slice(0, 2).toUpperCase();
 
         // Curriculum
         document.getElementById('curriculumSummary').textContent = `${cur.length} Lessons · Full Video Curriculum`;
@@ -152,20 +210,36 @@
             <span style="font-weight:700; color:var(--primary); font-size:12px; width:24px;">${String(idx + 1).padStart(2, '0')}</span>
             <div style="flex:1;">
               <b style="display:block; font-size:14px;">${item.lesson_title}</b>
-              <small style="color:var(--muted);">${item.module_title}</small>
+              <small style="color:var(--text-muted);">${item.module_title}</small>
             </div>
-            <span style="font-size:12px; color:var(--muted);">${item.duration || '15m'}</span>
+            <span style="font-size:12px; color:var(--text-muted);">${item.duration || '15m'}</span>
             ${item.is_preview 
               ? `<a href="../classroom/?course=${currentCourse.slug}&lesson=${item.id}" class="btn btn-secondary btn-sm" style="margin-left:8px; padding:4px 8px; font-size:11px;">Preview</a>` 
-              : `<span style="font-size:12px; color:var(--muted); margin-left:8px;">🔒</span>`}
+              : `<span style="font-size:12px; color:var(--text-muted); margin-left:8px;">🔒</span>`}
           </div>
         `).join('');
+
+        // Reviews
+        const rContainer = document.getElementById('courseReviewsList');
+        if (reviews.length === 0) {
+          rContainer.innerHTML = `<p style="color:var(--text-muted); font-size:14px; margin:0;">No reviews yet. Be the first to share your experience!</p>`;
+        } else {
+          rContainer.innerHTML = reviews.map(r => `
+            <div style="border-bottom:1px solid var(--border); padding:14px 0;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <b style="font-size:14px;">${r.user_name || 'Verified Student'}</b>
+                <span class="rating-pill">★ ${r.rating}.0</span>
+              </div>
+              <p style="margin:0; font-size:14px; color:var(--text-muted);">${r.review_text}</p>
+            </div>
+          `).join('');
+        }
 
         // Action Area
         const actionArea = document.getElementById('enrollmentActionArea');
         if (isStudentEnrolled) {
           actionArea.innerHTML = `
-            <div style="background:rgba(16,185,129,0.1); border-radius:var(--radius-md); padding:12px; margin-bottom:12px; font-size:13px; color:var(--success); font-weight:600; text-align:center;">
+            <div style="background:rgba(16,185,129,0.1); border-radius:var(--radius-sm); padding:12px; margin-bottom:12px; font-size:13px; color:var(--success); font-weight:600; text-align:center;">
               ✓ You are enrolled in this course!
             </div>
             <a class="btn btn-primary btn-full" href="../classroom/?course=${currentCourse.slug}">
@@ -175,16 +249,36 @@
         } else {
           actionArea.innerHTML = `
             <button class="btn btn-primary btn-full" onclick="window.openCheckoutModal({type:'course', id:'${currentCourse.id}', slug:'${currentCourse.slug}', title:'${currentCourse.title.replace(/'/g, "\\'")}', price:${currentCourse.price}, is_free:${currentCourse.is_free}})">
-              ${currentCourse.is_free ? 'Enroll for Free' : 'Enroll with bKash / Nagad'}
+              ${currentCourse.is_free ? 'Enroll for Free' : 'Enroll with bKash / Nagad / Rocket'}
             </button>
-            <p style="text-align:center; font-size:12px; color:var(--muted); margin:10px 0 0;">
-              Fast manual TrxID verification or instant access.
+            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin:10px 0 0;">
+              Zero credit card required. Fast manual TrxID verification.
             </p>
           `;
         }
       } catch (err) {
         console.error(err);
       }
+    }
+
+    function openReviewModal() { document.getElementById('reviewModal').classList.add('open'); }
+    function closeReviewModal() { document.getElementById('reviewModal').classList.remove('open'); }
+
+    async function submitCourseReview() {
+      const rating = document.getElementById('reviewRatingInput').value;
+      const text = document.getElementById('reviewTextInput').value.trim();
+      if (!text) { window.showToast('Please write your review feedback', 'error'); return; }
+
+      await window.AhamaAPI.postReview({
+        target_type: 'course',
+        target_id: currentCourse.id,
+        rating,
+        review_text: text
+      });
+
+      closeReviewModal();
+      window.showToast('Thank you! Review submitted.', 'success');
+      loadCourseDetail();
     }
 
     document.addEventListener('DOMContentLoaded', loadCourseDetail);

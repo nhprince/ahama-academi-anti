@@ -16,14 +16,15 @@
       </a>
 
       <nav class="desktop-nav">
-        <a href="../">Home</a>
-        <a class="active" href="./">Courses</a>
-        <a href="../templates/">Templates & Themes</a>
-        <a href="../docs/">Docs</a>
-        <a href="../about/">About</a>
+        <a href="../" data-i18n="nav_home">Home</a>
+        <a class="active" href="./" data-i18n="nav_courses">Courses</a>
+        <a href="../templates/" data-i18n="nav_templates">Templates & Themes</a>
+        <a href="../docs/" data-i18n="nav_docs">Docs</a>
+        <a href="../about/" data-i18n="nav_about">About</a>
       </nav>
 
       <div class="header-actions">
+        <button class="lang-btn" id="langToggleBtn" onclick="window.toggleLanguage()">🌐 EN</button>
         <button class="theme-btn" id="themeBtn">💻 System</button>
         <div id="headerAuth"></div>
         <button class="menu-btn" id="menuBtn">☰</button>
@@ -33,9 +34,9 @@
 
   <main class="container" style="padding-top:40px; padding-bottom:80px;">
     <div style="margin-bottom:32px;">
-      <span class="eyebrow">EXPLORE CURRICULUM</span>
-      <h1 style="font-size: clamp(32px, 4vw, 48px); margin:0 0 10px;">Master Real-World Development</h1>
-      <p style="color:var(--muted); font-size:16px; margin:0;">
+      <span class="eyebrow">CURRICULUM ARCHIVE</span>
+      <h1 style="font-size:clamp(32px, 4vw, 48px); margin:0 0 10px;">Master Real-World Development</h1>
+      <p style="color:var(--text-muted); font-size:16px; margin:0;">
         From Java foundations to native Android apps and Cloudflare serverless engineering.
       </p>
     </div>
@@ -64,12 +65,13 @@
   </main>
 
   <footer class="site-footer">
-    <div class="container copyright">
+    <div class="container copyright" data-i18n="footer_copyright">
       © 2026 Ahama Academy. All rights reserved.
     </div>
   </footer>
 
   <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/i18n.js"></script>
   <script src="../assets/js/site.js"></script>
   <script>
     let allCourses = [];
@@ -96,7 +98,7 @@
       if (!grid) return;
 
       if (filtered.length === 0) {
-        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);">No courses found matching your criteria.</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text-muted);">No courses found matching your criteria.</div>`;
         return;
       }
 
@@ -105,20 +107,21 @@
           <div class="course-cover ${c.is_free ? 'free' : 'premium'}">
             <div class="cover-top">
               <span class="badge-tag">${c.badge || (c.is_free ? 'FREE' : 'PREMIUM')}</span>
-              <span style="font-size:12px;opacity:0.8;">${c.category}</span>
+              <span style="font-size:12px;opacity:0.85;">${c.category}</span>
             </div>
             <div class="cover-icon">${c.title.slice(0, 2).toUpperCase()}</div>
           </div>
           <div class="card-body">
             <div class="card-meta">
-              <span>${c.level}</span>
-              <span>${c.lessons_count || 10} Lessons</span>
+              <span class="rating-pill">★ ${c.rating || '5.0'} <small style="color:var(--text-muted);font-weight:normal;">(${c.reviews_count || 24})</small></span>
+              <span>${c.level} · ${c.lessons_count || 8} Lessons</span>
             </div>
             <h3><a href="view.html?slug=${c.slug}">${c.title}</a></h3>
             <p class="card-desc">${c.description}</p>
             <div class="card-footer">
               <div class="price-tag ${c.is_free ? 'free' : ''}">
                 ${c.is_free ? 'FREE' : '৳ ' + c.price.toLocaleString()}
+                ${!c.is_free && c.price_usd ? `<small>($${c.price_usd})</small>` : ''}
               </div>
               <a class="btn btn-primary btn-sm" href="view.html?slug=${c.slug}">
                 View Details →

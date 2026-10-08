@@ -1,13 +1,15 @@
 // ==========================================================
-// Ahama Academy - Global Site Controller & UI Engine
+// Ahama Academy - Global Site Controller & UI Engine (V2)
+// Handles bilingual switching, themes, auth state & bKash/Nagad checkout
 // ==========================================================
 
 (function() {
-  // Theme Manager
   const root = document.documentElement;
   const themeBtn = document.getElementById('themeBtn');
   const menuBtn = document.getElementById('menuBtn');
+  const langBtn = document.getElementById('langToggleBtn');
 
+  // Theme Manager
   function applyTheme(theme) {
     root.dataset.theme = theme;
     if (themeBtn) {
@@ -27,14 +29,14 @@
     });
   }
 
-  // Mobile menu toggle
+  // Mobile Menu
   if (menuBtn) {
     menuBtn.addEventListener('click', () => {
       document.body.classList.toggle('nav-open');
     });
   }
 
-  // Global Toast Function
+  // Global Toast
   window.showToast = function(message, type = 'info') {
     let container = document.getElementById('toastContainer');
     if (!container) {
@@ -54,13 +56,12 @@
     }, 3500);
   };
 
-  // Sync Header User Profile & Nav Links
+  // Sync Header User Profile
   function syncHeaderAuth() {
     const user = window.AhamaAPI ? window.AhamaAPI.getUser() : null;
     const authContainer = document.getElementById('headerAuth');
     if (!authContainer) return;
 
-    // Detect base depth for relative links
     const isSubdir = window.location.pathname.includes('/courses/') || 
                      window.location.pathname.includes('/student/') || 
                      window.location.pathname.includes('/admin/') || 
@@ -76,9 +77,9 @@
       authContainer.innerHTML = `
         <a class="btn btn-secondary btn-sm" href="${dest}">
           <span class="avatar" style="width:24px;height:24px;font-size:10px;">${user.avatar || 'ME'}</span>
-          <span>${user.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}</span>
+          <span>${user.role === 'admin' ? 'Admin' : 'Dashboard'}</span>
         </a>
-        <button class="btn btn-secondary btn-sm" onclick="window.AhamaAPI.logout()" title="Logout">✕</button>
+        <button class="btn btn-secondary btn-sm" onclick="window.AhamaAPI.logout()" title="Logout" style="padding:6px 10px;">✕</button>
       `;
     } else {
       authContainer.innerHTML = `
@@ -88,13 +89,22 @@
     }
   }
 
-  // Load Announcement Bar & CMS settings
+  // Load CMS Dynamic Settings
   async function loadCmsSettings() {
     if (!window.AhamaAPI) return;
     try {
       const res = await window.AhamaAPI.getCmsSettings();
       const settings = res.settings;
       if (settings) {
+        // Theme Colors
+        if (settings.theme_primary_color) {
+          root.style.setProperty('--primary', settings.theme_primary_color);
+        }
+        if (settings.theme_accent_color) {
+          root.style.setProperty('--accent', settings.theme_accent_color);
+        }
+
+        // Announcement Marquee
         const bar = document.getElementById('announcementBar');
         if (bar && settings.announcement_active === '1') {
           bar.style.display = 'flex';
@@ -102,7 +112,7 @@
           if (textEl) textEl.innerHTML = settings.announcement_bar;
         }
 
-        // Apply dynamic hero headline/subtext if on homepage
+        // Dynamic Hero
         const heroTitle = document.getElementById('heroHeadline');
         if (heroTitle && settings.hero_headline) {
           heroTitle.innerHTML = settings.hero_headline;
@@ -115,9 +125,8 @@
     } catch (e) {}
   }
 
-  // Global Checkout Modal Controller
+  // Checkout Modal
   window.openCheckoutModal = function(item) {
-    // item: { type: 'course'|'template', id, title, price, is_free }
     const user = window.AhamaAPI ? window.AhamaAPI.getUser() : null;
     const isSubdir = window.location.pathname.includes('/courses/') || 
                      window.location.pathname.includes('/templates/') || 
@@ -129,7 +138,7 @@
       window.showToast('Please sign in to enroll or purchase.', 'info');
       setTimeout(() => {
         window.location.href = `${basePrefix}login/?redirect=${encodeURIComponent(window.location.href)}`;
-      }, 1000);
+      }, 900);
       return;
     }
 
@@ -142,27 +151,28 @@
         <div class="modal-dialog">
           <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
           <div class="eyebrow" id="modalItemType">CHECKOUT</div>
-          <h2 id="modalItemTitle" style="margin-bottom:8px;"></h2>
-          <div style="font-size:24px;font-weight:800;margin-bottom:16px;" id="modalItemPrice"></div>
+          <h2 id="modalItemTitle" style="margin-bottom:6px; font-size:22px;"></h2>
+          <div style="font-size:26px; font-weight:800; font-family:'Outfit',sans-serif; margin-bottom:16px;" id="modalItemPrice"></div>
           
           <div id="paymentOptions">
-            <p style="font-size:13px;color:var(--muted);margin-bottom:8px;">Select Payment Method:</p>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Select Payment Method:</p>
             <div class="payment-selector">
               <div class="payment-btn bkash active" onclick="selectPayMethod('bkash')">bKash</div>
               <div class="payment-btn nagad" onclick="selectPayMethod('nagad')">Nagad</div>
-              <div class="payment-btn" onclick="selectPayMethod('card')">Card / Other</div>
+              <div class="payment-btn rocket" onclick="selectPayMethod('rocket')">Rocket</div>
             </div>
 
-            <div id="trxInstructions" style="background:var(--soft);border-radius:var(--radius-md);padding:14px;font-size:13px;margin-bottom:16px;">
-              <p style="margin:0 0 6px;"><b>Step 1:</b> Send <b><span id="instructionAmount"></span></b> via bKash to:</p>
-              <div style="font-family:monospace;background:var(--surface);padding:6px 10px;border-radius:6px;border:1px solid var(--border);font-weight:bold;margin-bottom:8px;" id="instructionNumber">
-                01712-345678 (Personal)
+            <div id="trxInstructions" style="background:var(--soft); border-radius:var(--radius-sm); padding:14px; font-size:13px; margin-bottom:16px; border:1px solid var(--border);">
+              <p style="margin:0 0 6px;"><b>Step 1:</b> Send <b><span id="instructionAmount"></span></b> via <span id="instructionMethodName">bKash</span> to:</p>
+              <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:8px 12px; border-radius:6px; border:1px solid var(--border); margin-bottom:8px;">
+                <code style="font-size:13px; font-weight:bold;" id="instructionNumber">01712-345678</code>
+                <button class="btn btn-secondary btn-sm" style="padding:3px 8px; font-size:11px;" onclick="copyPayNumber()">Copy</button>
               </div>
-              <p style="margin:0;"><b>Step 2:</b> Enter the Transaction ID (TrxID) below to activate your purchase.</p>
+              <p style="margin:0; font-size:12px; color:var(--text-muted);"><b>Step 2:</b> Enter the Transaction ID (TrxID) below to submit for instant activation.</p>
             </div>
 
             <div class="form-group">
-              <label class="form-label">bKash / Nagad Transaction ID (TrxID)</label>
+              <label class="form-label">Payment Transaction ID (TrxID) *</label>
               <input type="text" id="orderTrxId" class="form-input" placeholder="e.g. BK98X7102A">
             </div>
 
@@ -173,25 +183,24 @@
 
             <div class="form-group">
               <label class="form-label">Coupon Code (Optional)</label>
-              <div style="display:flex;gap:8px;">
-                <input type="text" id="orderCoupon" class="form-input" placeholder="e.g. WELCOME20, FREEPASS">
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="orderCoupon" class="form-input" placeholder="e.g. WELCOME20, BANGLA50, FREEPASS">
                 <button class="btn btn-secondary btn-sm" onclick="applyCheckoutCoupon()">Apply</button>
               </div>
-              <small id="couponFeedback" style="display:block;margin-top:4px;font-size:12px;"></small>
+              <small id="couponFeedback" style="display:block; margin-top:4px; font-size:12px;"></small>
             </div>
           </div>
 
-          <div id="freeEnrollBox" style="display:none;background:rgba(16,185,129,0.1);padding:14px;border-radius:var(--radius-md);margin-bottom:16px;">
-            <p style="margin:0;color:var(--success);font-weight:600;font-size:14px;">✓ Free Item / 100% Promo Pass Applied! Instant access will be granted.</p>
+          <div id="freeEnrollBox" style="display:none; background:rgba(16,185,129,0.1); padding:14px; border-radius:var(--radius-sm); margin-bottom:16px;">
+            <p style="margin:0; color:var(--success); font-weight:600; font-size:14px;">✓ Free Item / 100% Promo Pass Applied! Instant access will be granted.</p>
           </div>
 
-          <button id="submitOrderBtn" class="btn btn-primary btn-full" onclick="submitOrder()">Complete Enrollment</button>
+          <button id="submitOrderBtn" class="btn btn-primary btn-full" onclick="submitOrder()">Submit Order</button>
         </div>
       `;
       document.body.appendChild(modal);
     }
 
-    // Set checkout modal state
     window.currentCheckoutItem = item;
     window.selectedPaymentMethod = 'bkash';
     window.checkoutDiscount = 0;
@@ -211,12 +220,23 @@
   window.selectPayMethod = function(method) {
     window.selectedPaymentMethod = method;
     document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
-    const clicked = document.querySelector(`.payment-btn.${method}`) || document.querySelector('.payment-btn:last-child');
+    const clicked = document.querySelector(`.payment-btn.${method}`);
     if (clicked) clicked.classList.add('active');
 
     const numEl = document.getElementById('instructionNumber');
+    const methodEl = document.getElementById('instructionMethodName');
+    if (methodEl) methodEl.textContent = method.toUpperCase();
+
     if (numEl) {
-      numEl.textContent = method === 'bkash' ? '01712-345678 (Personal / Send Money)' : method === 'nagad' ? '01812-345678 (Merchant / Payment)' : 'Online Banking / Visa / Master';
+      numEl.textContent = method === 'bkash' ? '01712-345678' : method === 'nagad' ? '01812-345678' : '01912-345678-9';
+    }
+  };
+
+  window.copyPayNumber = function() {
+    const num = document.getElementById('instructionNumber')?.textContent;
+    if (num) {
+      navigator.clipboard.writeText(num);
+      window.showToast('Number copied to clipboard! 📋', 'success');
     }
   };
 
@@ -274,7 +294,7 @@
     const isFree = item.is_free || window.checkoutDiscount === 1.0;
 
     if (!isFree && !trxId) {
-      window.showToast('Please enter your bKash/Nagad Transaction ID (TrxID)', 'error');
+      window.showToast('Please enter your payment Transaction ID (TrxID)', 'error');
       return;
     }
 
@@ -294,9 +314,8 @@
       });
 
       closeCheckoutModal();
-      window.showToast(res.message || 'Order placed successfully!', 'success');
+      window.showToast(res.message || 'Order submitted successfully!', 'success');
 
-      // Navigate to student dashboard or classroom
       const isSubdir = window.location.pathname.includes('/courses/') || 
                        window.location.pathname.includes('/templates/');
       const basePrefix = isSubdir ? '../' : './';
@@ -314,7 +333,6 @@
     }
   };
 
-  // Run on page load
   document.addEventListener('DOMContentLoaded', () => {
     syncHeaderAuth();
     loadCmsSettings();

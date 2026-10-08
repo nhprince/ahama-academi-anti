@@ -1,18 +1,22 @@
 export async function onRequestGet(context) {
   const { env, json } = context;
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
 
   const defaultSettings = {
     site_name: "Ahama Academy",
-    site_tagline: "Learn practical skills & build real software.",
-    announcement_bar: "🎉 50% Off on all Android & Web Masterclasses! Use coupon BANGLA50 at checkout.",
+    site_tagline: "Learn practical skills. Build real software.",
+    announcement_bar: "🎉 50% Off on all Android & Web Masterclasses! Use coupon <b>BANGLA50</b> at checkout.",
     announcement_active: "1",
     hero_headline: "Master Code.<br><span>Build Real Things.</span>",
-    hero_subtext: "Project-based native Android, Java, and modern Full-Stack courses designed to turn you into an industry-ready engineer.",
+    hero_subtext: "Project-based native Android, Java, and modern Full-Stack courses designed to turn you into an industry-ready engineer. Download production-ready templates & themes.",
     bkash_number: "01712-345678 (Personal / Send Money)",
     nagad_number: "01812-345678 (Merchant / Payment)",
+    rocket_number: "01912-345678-9 (Personal / Send Money)",
     support_email: "support@ahama.academy",
-    currency_symbol: "৳"
+    currency_symbol: "৳",
+    theme_primary_color: "#e11d48",
+    theme_accent_color: "#6366f1",
+    default_lang: "en"
   };
 
   if (!db) {
@@ -36,7 +40,7 @@ export async function onRequestPost(context) {
   }
 
   const body = await request.json(); // key-value map
-  const db = env.DB;
+  const db = env.ahama_db_anti || env.DB;
 
   if (!db) {
     return json({ success: true, message: "Settings saved (Mock mode)" });
